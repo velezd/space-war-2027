@@ -16,7 +16,13 @@ def run_game():
 
     # init pygame and screen
     pygame.init()
-    screen = pygame.display.set_mode((s.screen_width, s.screen_height))
+    if s.fullscreen:
+        s.screen_width = s.fscreen_width
+        s.screen_height = s.fscreen_height
+        screen = pygame.display.set_mode((s.screen_width, s.screen_height), pygame.FULLSCREEN)
+    else:
+        screen = pygame.display.set_mode((s.screen_width, s.screen_height))
+
     pygame.display.set_caption('Game!')
 
     # Internal screen
