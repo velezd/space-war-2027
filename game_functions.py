@@ -1,5 +1,6 @@
 import pygame
 from pygame import sprite
+from sys import exit
 from time import time
 from bullet import Bullet
 
@@ -8,7 +9,7 @@ def check_events(s, ship, bullets, gfx, status):
     """Respond to keyboard and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit()
+            exit()
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, s, ship, bullets, gfx, status)
         elif event.type == pygame.KEYUP:
@@ -68,7 +69,6 @@ def check_collisions(ship, enemies, bullets):
     list = pygame.sprite.spritecollide(ship, enemies, True)
     if list:
         ship.killed()
-
 
 
 def update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets):
