@@ -46,6 +46,7 @@ def run_game():
     # Init ship and bullets
     ship = Ship(int_screen, s, gfx, status)
     bullets = Group()
+    enemy_bullets = Group()
 
     # Init background
     background = Background(s, int_screen, gfx)
@@ -66,17 +67,17 @@ def run_game():
         if status.game_running:
             background.update(dt)
 
-            level.update(dt)
+            level.update(dt, enemy_bullets)
 
             gf.check_events(s, ship, bullets, gfx, status)
 
             ship.update(dt)
 
-            gf.update_bullets(bullets, dt)
+            gf.update_bullets(bullets, enemy_bullets, s, dt)
 
-            gf.check_collisions(ship, level.enemies, bullets)
+            gf.check_collisions(ship, level.enemies, bullets, enemy_bullets)
 
-            gf.update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets)
+            gf.update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets, enemy_bullets)
 
             status.update()
         else:

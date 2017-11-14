@@ -39,8 +39,11 @@ class GFX():
         self.menu_background = {'front': pygame.image.load('gfx/menu_background/ship_med_front.png').convert_alpha(),
                                 'back': pygame.image.load('gfx/menu_background/ship_big_back.png').convert_alpha()}
 
+        # Bullets
         self.bullet = pygame.image.load('gfx/bullet.bmp').convert()
         self.bullet.set_colorkey((0, 255, 0))
+        self.enemy_bullet1 = pygame.image.load('gfx/enemy_bullet1.png').convert_alpha()
+
         # Backgrounds
         self.background1 = pygame.image.load('gfx/backgrounds/background1.png').convert()
         self.background1 = pygame.transform.scale(self.background1, (s.int_screen_width, s.int_screen_width))

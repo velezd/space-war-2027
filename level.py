@@ -15,7 +15,7 @@ class Level():
         with open('levels/' + str(s.start_level), 'r') as file:
             self.level = file.read().splitlines()
 
-    def update(self, dt):
+    def update(self, dt, enemy_bullets):
         if self.timer < time():
             print self.s.spawn_speed * dt
             self.timer = time() + self.s.spawn_speed * dt
@@ -35,7 +35,7 @@ class Level():
                     if char == 's':
                         self.enemies.add(shifter.Shifter(self.s, self.gfx, pos_x))
 
-        self.enemies.update(dt)
+        self.enemies.update(dt, enemy_bullets)
 
     def draw(self):
         self.enemies.draw(self.int_screen)

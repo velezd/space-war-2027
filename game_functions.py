@@ -48,16 +48,23 @@ def fire_bullet(s, ship, bullets, gfx):
         bullets.add(Bullet(s, ship, gfx))
 
 
-def update_bullets(bullets, dt):
+def update_bullets(bullets, enemy_bullets, s, dt):
     """Manage bullets"""
     bullets.update(dt)
+    enemy_bullets.update(dt)
+
     # Get rid of bullet out of screen
     for bullet in bullets:
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
+    for bullet in enemy_bullets:
+        if bullet.rect.top >= s.int_screen_height:
+            enemy_bullets.remove(bullet)
 
-def check_collisions(ship, enemies, bullets):
+
+
+def check_collisions(ship, enemies, bullets, enemy_bullets):
     # Check collisions between bullets and enemies, bullets get removed automatically
     dict = pygame.sprite.groupcollide(enemies, bullets, False, True)
     for enemy in dict.keys():
@@ -65,13 +72,18 @@ def check_collisions(ship, enemies, bullets):
         if enemy.health <= 0:
             enemies.remove(enemy)
 
+    # check collisions between player and enemy bullets
+    dict = pygame.sprite.spritecollide(ship, enemy_bullets, True)
+    for bullet in dict:
+        ship.killed()
+
     # Check collisions between player and enemies
     list = pygame.sprite.spritecollide(ship, enemies, True)
     if list:
         ship.killed()
 
 
-def update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets):
+def update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets, enemy_bullets):
     """Update images on the screen and flip to the new screen."""
     screen.fill((25,25,25))
 
@@ -85,6 +97,9 @@ def update_screen(s, screen, int_screen, text, clock, background, level, ship, b
 
     # Draw bullets
     for bullet in bullets.sprites():
+        bullet.blitme(int_screen)
+
+    for bullet in enemy_bullets.sprites():
         bullet.blitme(int_screen)
 
     # Scale internal screen

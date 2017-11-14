@@ -30,7 +30,7 @@ class Asteroid(Sprite):
         self.rotation_speed = uniform(0.08, 0.2)     # time in seconds between animation frames
         self.direction = choice([1, -1])
 
-    def update(self, dt):
+    def update(self, dt, enemy_bullets):
         """Update movement and animation"""
         # If time between frames elapsed - set image of the sprite to the next frame
         if self.timer < time():
