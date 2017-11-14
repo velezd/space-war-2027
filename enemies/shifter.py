@@ -13,6 +13,7 @@ class Shifter(Sprite):
         self.movement_speed = s.shifter_speed
 
         self.image = self.gfx.shifter['r']
+        self.mask = self.gfx.shifter_mask['r']
 
         # Set starting position
         self.rect = self.image.get_rect()
@@ -53,6 +54,7 @@ class Shifter(Sprite):
 
             # change sprite image
             self.image = self.gfx.shifter[self.anim_frame]
+            self.mask = self.gfx.shifter_mask[self.anim_frame]
 
         # shooting
         if not self.shooting:

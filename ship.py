@@ -11,6 +11,7 @@ class Ship():
 
         # load the ships image and get it's rect
         self.image = gfx.ship['c_0']
+        self.mask = gfx.ship_mask['c_0']
         self.rect = self.image.get_rect()
         self.screen_rect = self.screen.get_rect()
 
@@ -43,11 +44,14 @@ class Ship():
         if self.moving_left and self.rect.left > 0:
             self.pos_x -= self.s.ship_speed * dt
             self.image = self.gfx.ship['l_0']
+            self.mask = self.gfx.ship_mask['l_0']
         elif self.moving_right and self.rect.right < self.screen_rect.right:
             self.pos_x += self.s.ship_speed * dt
             self.image = self.gfx.ship['r_0']
+            self.mask = self.gfx.ship_mask['r_0']
         elif self.moving_center:
             self.image = self.gfx.ship['c_0']
+            self.mask = self.gfx.ship_mask['c_0']
             self.moving_center = False
 
         # if shooting use special ship image

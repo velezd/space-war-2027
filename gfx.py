@@ -4,8 +4,9 @@ import pygame
 class GFX():
     """Inits and stores all graphics"""
     def __init__(self, s):
-        self.logo = pygame.image.load('gfx/logo.png').convert_alpha()
-        # New ship loading
+        # -- Loading images --
+
+        # Player ship
         temp = pygame.image.load('gfx/ship0.png').convert_alpha()
         size = temp.get_rect().height
         self.ship = {'c_0': temp.subsurface((0,0,size,size)),
@@ -15,38 +16,61 @@ class GFX():
                      'r_0': temp.subsurface((size*4,0,size,size)),
                      'r_1': temp.subsurface((size*5,0,size,size))}
 
+        # Enemy shifter
         temp = pygame.image.load('gfx/enemies/shifter.png').convert_alpha()
         size = temp.get_rect().height
         self.shifter = {'c': temp.subsurface((size,0,size,size)),
                         'l': temp.subsurface((0, 0, size, size)),
                         'r': temp.subsurface((size*2, 0, size, size))}
-        del temp
-        del size
 
-        """ Old ship loading
-        self.ship = {'c_0': pygame.image.load('gfx/ship/ship_c_0.png').convert_alpha(),
-                     'c_1': pygame.image.load('gfx/ship/ship_c_1.png').convert_alpha(),
-                     'l_0': pygame.image.load('gfx/ship/ship_l_0.png').convert_alpha(),
-                     'l_1': pygame.image.load('gfx/ship/ship_l_1.png').convert_alpha(),
-                     'r_0': pygame.image.load('gfx/ship/ship_r_0.png').convert_alpha(),
-                     'r_1': pygame.image.load('gfx/ship/ship_r_1.png').convert_alpha()
-                     }
-        """
-        self.asteroid = [pygame.image.load('gfx/enemies/asteroid0.png').convert_alpha(),
-                         pygame.image.load('gfx/enemies/asteroid1.png').convert_alpha()]
-        self.enemy_bullet1 = pygame.image.load('gfx/enemy_bullet1.png').convert_alpha()
+        # Asteroids
+        temp = [pygame.image.load('gfx/enemies/asteroid0.png').convert_alpha(),
+                pygame.image.load('gfx/enemies/asteroid1.png').convert_alpha()]
 
-        self.menu_background = {'front': pygame.image.load('gfx/menu_background/ship_med_front.png').convert_alpha(),
-                                'back': pygame.image.load('gfx/menu_background/ship_big_back.png').convert_alpha()}
+        # Separate image in to list of animation frames
+        self.asteroids = []
+        for image in temp:
+            size = image.get_rect()
+            list = []
+            for frame in range(size.width/size.height):
+                list.append(image.subsurface(size.height*frame, 0, size.height, size.height))
+            self.asteroids.append(list)
 
         # Bullets
-        self.bullet = pygame.image.load('gfx/bullet.bmp').convert()
-        self.bullet.set_colorkey((0, 255, 0))
+        self.bullet = pygame.image.load('gfx/bullet.png').convert_alpha()
         self.enemy_bullet1 = pygame.image.load('gfx/enemy_bullet1.png').convert_alpha()
 
         # Backgrounds
         self.background1 = pygame.image.load('gfx/backgrounds/background1.png').convert()
         self.background1 = pygame.transform.scale(self.background1, (s.int_screen_width, s.int_screen_width))
+
+        self.menu_background = {'front': pygame.image.load('gfx/menu_background/ship_med_front.png').convert_alpha(),
+                                'back': pygame.image.load('gfx/menu_background/ship_big_back.png').convert_alpha()}
+
+        # Misc
+        self.logo = pygame.image.load('gfx/logo.png').convert_alpha()
+
+        # -- Creating masks --
+        self.ship_mask = {'c_0': pygame.mask.from_surface(self.ship['c_0']),
+                          'c_1': pygame.mask.from_surface(self.ship['c_1']),
+                          'l_0': pygame.mask.from_surface(self.ship['l_0']),
+                          'l_1': pygame.mask.from_surface(self.ship['l_1']),
+                          'r_0': pygame.mask.from_surface(self.ship['r_0']),
+                          'r_1': pygame.mask.from_surface(self.ship['r_1'])}
+
+        self.shifter_mask = {'c': pygame.mask.from_surface(self.shifter['c']),
+                             'l': pygame.mask.from_surface(self.shifter['l']),
+                             'r': pygame.mask.from_surface(self.shifter['r'])}
+
+        self.asteroids_mask = []
+        for asteroid in self.asteroids:
+            list = []
+            for frame in asteroid:
+                list.append(pygame.mask.from_surface(frame))
+            self.asteroids_mask.append(list)
+
+        self.bullet_mask = pygame.mask.from_surface(self.bullet)
+        self.enemy_bullet1_mask = pygame.mask.from_surface(self.enemy_bullet1)
 
 
 class Text():

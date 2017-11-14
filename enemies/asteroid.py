@@ -14,8 +14,8 @@ class Asteroid(Sprite):
         self.health = 100
 
         # Select random asteroid image
-        self.i = randint(0, len(gfx.asteroid)-1)
-        self.image = self.gfx.asteroid[self.i].subsurface((0,0,32,32))
+        self.i = randint(0, len(gfx.asteroids)-1)
+        self.image = self.gfx.asteroids[self.i][0]
 
         # Set starting position
         self.rect = self.image.get_rect()
@@ -25,10 +25,13 @@ class Asteroid(Sprite):
         self.size = self.rect.height
         self.timer = 0
 
-        self.num_frames = self.gfx.asteroid[self.i].get_rect().width / self.size    # Gen number of animation frames
+        self.num_frames = len(self.gfx.asteroids[self.i])    # Gen number of animation frames
         self.frame = randint(0, self.num_frames-1)   # Current frame number of animation - set random one
         self.rotation_speed = uniform(0.08, 0.2)     # time in seconds between animation frames
         self.direction = choice([1, -1])
+
+        self.image = self.gfx.asteroids[self.i][self.frame]
+        self.mask = self.gfx.asteroids_mask[self.i][self.frame]
 
     def update(self, dt, enemy_bullets):
         """Update movement and animation"""
@@ -43,7 +46,8 @@ class Asteroid(Sprite):
             if self.frame == -1:
                 self.frame = self.num_frames-1
 
-            self.image = self.gfx.asteroid[self.i].subsurface((self.size * self.frame, 0, self.size, self.size))
+            self.image = self.gfx.asteroids[self.i][self.frame]
+            self.mask = self.gfx.asteroids_mask[self.i][self.frame]
 
         # move the asteroid
         self.rect.bottom += self.movement_speed * dt

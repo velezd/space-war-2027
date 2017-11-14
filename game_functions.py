@@ -66,19 +66,19 @@ def update_bullets(bullets, enemy_bullets, s, dt):
 
 def check_collisions(ship, enemies, bullets, enemy_bullets):
     # Check collisions between bullets and enemies, bullets get removed automatically
-    dict = pygame.sprite.groupcollide(enemies, bullets, False, True)
+    dict = pygame.sprite.groupcollide(enemies, bullets, False, True, pygame.sprite.collide_mask)
     for enemy in dict.keys():
         enemy.hit()
         if enemy.health <= 0:
             enemies.remove(enemy)
 
     # check collisions between player and enemy bullets
-    dict = pygame.sprite.spritecollide(ship, enemy_bullets, True)
+    dict = pygame.sprite.spritecollide(ship, enemy_bullets, True, pygame.sprite.collide_mask)
     for bullet in dict:
         ship.killed()
 
     # Check collisions between player and enemies
-    list = pygame.sprite.spritecollide(ship, enemies, True)
+    list = pygame.sprite.spritecollide(ship, enemies, True, pygame.sprite.collide_mask)
     if list:
         ship.killed()
 

@@ -9,6 +9,7 @@ class Bullet(Sprite):
 
         # Create bullet at the correct position
         self.image = gfx.bullet
+        self.mask = gfx.bullet_mask
         self.rect = self.image.get_rect()
         self.rect.centerx = ship.rect.centerx
         self.rect.bottom = ship.rect.top
@@ -35,6 +36,7 @@ class EnemyBullet(Sprite):
 
         # Create bullet at the correct position
         self.image = gfx.enemy_bullet1
+        self.mask = gfx.enemy_bullet1_mask
         self.rect = self.image.get_rect()
         self.rect.centerx = enemy.rect.centerx
         self.rect.bottom = enemy.rect.bottom
