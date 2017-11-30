@@ -7,6 +7,7 @@ from level import Level
 from menu import Menu
 from status import GameStatus
 from pygame.sprite import Group
+#import profile
 
 
 def run_game():
