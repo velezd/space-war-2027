@@ -30,7 +30,9 @@ class Application():
         self.width_old = 0
         self.height_old = 0
         self.fullscreen_old = 0
+        self.scaling_old = 0
         self.fullscreen = tk.IntVar()
+        self.scaling = tk.IntVar()
 
         # Load cinfiguration
         self.load()
@@ -46,8 +48,10 @@ class Application():
 
         label_resolution = tk.Label(self.root, text='Resolution')
         label_fullscreen = tk.Label(self.root, text='Fullscreen')
+        label_scaling = tk.Label(self.root, text='Scaling')
 
         self.check_fullscreen = tk.Checkbutton(self.root, variable=self.fullscreen)
+        self.check_scaling = tk.Checkbutton(self.root, variable=self.scaling)
         v = tk.StringVar(self.root)
         self.spin_resolutions = tk.Spinbox(self.root, values=self.resolutions, textvariable=v)
         v.set(self.resolution_old)
@@ -56,13 +60,15 @@ class Application():
         self.quit_button = tk.Button(self.root, text="Quit", command=self.stop)
 
         # Place widget to window
-        label_fullscreen.grid(row=4,column=0, pady=5)
-        self.check_fullscreen.grid(row=4,column=1, pady=5)
-        label_resolution.grid(row=5,column=0, pady=5)
-        self.spin_resolutions.grid(row=5, column=1, pady=5)
+        label_resolution.grid(row=4,column=0, pady=3)
+        self.spin_resolutions.grid(row=4, column=1, pady=3)
+        label_fullscreen.grid(row=5, column=0, pady=3)
+        self.check_fullscreen.grid(row=5, column=1, pady=3)
+        label_scaling.grid(row=6, column=0, pady=3)
+        self.check_scaling.grid(row=6, column=1, pady=3)
 
-        self.start_button.grid(row=6, columnspan=2, sticky='WE')
-        self.quit_button.grid(row=7, columnspan=2, sticky='WE')
+        self.start_button.grid(row=7, columnspan=2, sticky='WE')
+        self.quit_button.grid(row=8, columnspan=2, sticky='WE')
 
     def start(self):
         """ Destroy launcher but continue with start of game """
@@ -84,7 +90,9 @@ class Application():
             self.width_old = data['screen_width']
             self.height_old = data['screen_height']
             self.fullscreen_old = data['fullscreen']
+            self.scaling_old = data['scaling']
 
+            self.scaling.set(data['scaling'])
             self.fullscreen.set(data['fullscreen'])
 
         except IOError:
@@ -93,11 +101,13 @@ class Application():
     def save(self):
         """ Save Game config to file, if changed """
         fs = self.fullscreen.get()
+        sc = self.scaling.get()
         res = self.spin_resolutions.get().split('x')
 
-        if res[0] != self.width_old or res[1] != self.height_old or fs != self.fullscreen_old:
+        if res[0] != self.width_old or res[1] != self.height_old or fs != self.fullscreen_old or sc != self.scaling_old:
             data = {'screen_width': res[0],
                     'screen_height': res[1],
+                    'scaling': sc,
                     'fullscreen': fs}
 
             js_data = dumps(data, indent=4, separators=(',', ': '))

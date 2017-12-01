@@ -17,7 +17,6 @@ class Level():
 
     def update(self, dt, enemy_bullets):
         if self.timer < time():
-            print self.s.spawn_speed * dt
             self.timer = time() + self.s.spawn_speed * dt
             if len(self.level) != 0:
                 line = self.level.pop(-1)

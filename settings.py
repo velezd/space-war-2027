@@ -10,6 +10,7 @@ class Settings():
         self.screen_width = 1024
         self.screen_height = 768
         self.fullscreen = False
+        self.scaling = True
         self.int_screen_width = 600
         self.int_screen_height = 300
         self.int_scale_width = 0
@@ -49,6 +50,11 @@ class Settings():
                 self.fullscreen = True
             else:
                 self.fullscreen = False
+
+            if data['scaling'] == 1:
+                self.scaling = True
+            else:
+                self.scaling = False
 
         except IOError:
             print 'Can\'t load game settings'

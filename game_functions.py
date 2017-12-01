@@ -103,7 +103,8 @@ def update_screen(s, screen, int_screen, text, clock, background, level, ship, b
         bullet.blitme(int_screen)
 
     # Scale internal screen
-    int_screen = pygame.transform.scale(int_screen, (s.int_scale_width, s.int_scale_height))
+    if s.scaling:
+        int_screen = pygame.transform.scale(int_screen, (s.int_scale_width, s.int_scale_height))
 
     # And put it on screen
     rect = int_screen.get_rect()
