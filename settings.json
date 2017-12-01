@@ -1,7 +1,5 @@
 {
-  "screen_width": 600,
-  "screen_height": 400,
-  "fscreen_width": 1600,
-  "fscreen_height": 900,
-  "fullscreen": 0
+    "fullscreen": 1,
+    "screen_width": "1920",
+    "screen_height": "1080"
 }

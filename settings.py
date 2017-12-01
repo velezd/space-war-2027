@@ -7,10 +7,8 @@ class Settings():
     def __init__(self):
         """Init the game's settings"""
         # Screen settings
-        self.screen_width = 600
-        self.screen_height = 400
-        self.fscreen_width = 1600
-        self.fscreen_height = 900
+        self.screen_width = 1024
+        self.screen_height = 768
         self.fullscreen = False
         self.int_screen_width = 600
         self.int_screen_height = 300
@@ -45,10 +43,8 @@ class Settings():
             with open('settings.json', 'r') as file:
                 data = loads(file.read())
 
-            self.screen_width = data['screen_width']
-            self.screen_height = data['screen_height']
-            self.fscreen_width = data['fscreen_width']
-            self.fscreen_height = data['fscreen_height']
+            self.screen_width = int(data['screen_width'])
+            self.screen_height = int(data['screen_height'])
             if data['fullscreen'] == 1:
                 self.fullscreen = True
             else:
