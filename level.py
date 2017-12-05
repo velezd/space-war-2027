@@ -17,7 +17,7 @@ class Level():
 
     def update(self, dt, enemy_bullets):
         if self.timer < time():
-            self.timer = time() + self.s.spawn_speed * dt
+            self.timer = time() + self.s.spawn_speed
             if len(self.level) != 0:
                 line = self.level.pop(-1)
                 position = 0
@@ -35,6 +35,11 @@ class Level():
                         self.enemies.add(shifter.Shifter(self.s, self.gfx, pos_x))
 
         self.enemies.update(dt, enemy_bullets)
+
+        # Get rid of enemies out of screen
+        for sprite in self.enemies:
+            if sprite.rect.top > self.s.int_screen_height:
+                self.enemies.remove(sprite)
 
     def draw(self):
         self.enemies.draw(self.int_screen)

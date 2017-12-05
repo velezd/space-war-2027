@@ -29,7 +29,7 @@ class Settings():
 
         # Game settings
         self.start_level = 1
-        self.spawn_speed = 0.03
+        self.spawn_speed = 0.5
         self.level_width = 15
 
         # Enemy settings
