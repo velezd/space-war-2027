@@ -11,14 +11,20 @@ class Level():
         self.level = []
         self.timer = 0
         self.enemies = Group()
+        self.enemy_hold = False
 
         with open('levels/' + str(s.start_level), 'r') as file:
             self.level = file.read().splitlines()
 
     def update(self, dt, enemy_bullets):
-        if self.timer < time():
-            self.timer = time() + self.s.spawn_speed
-            if len(self.level) != 0:
+        # Enemy spawning and level progression
+        if self.enemy_hold:
+            if len(self.enemies) == 0:
+                self.enemy_hold = False
+        else:
+            if self.timer < time() and len(self.level) != 0:
+                self.timer = time() + self.s.spawn_speed
+
                 line = self.level.pop(-1)
                 position = 0
                 for char in line:
@@ -27,13 +33,18 @@ class Level():
                     if char != '-':
                         spacing = self.s.int_screen_width / self.s.level_width
                         pos_x = spacing * position - spacing / 2
+                    # Stop spawning until all enemies are gone
+                    if char == '_':
+                        self.enemy_hold = True
+                        break
 
                     if char == 'a':
                         self.enemies.add(asteroid.Asteroid(self.s, self.gfx, pos_x))
 
-                    if char == 's':
+                    elif char == 's':
                         self.enemies.add(shifter.Shifter(self.s, self.gfx, pos_x))
 
+        # Enemy update
         self.enemies.update(dt, enemy_bullets)
 
         # Get rid of enemies out of screen
