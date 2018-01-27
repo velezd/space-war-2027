@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pygame
 from gfx import *
 import game_functions as gf
 from settings import Settings
@@ -48,6 +49,7 @@ def run_game():
     ship = Ship(int_screen, s, gfx, status)
     bullets = Group()
     enemy_bullets = Group()
+    effects = Group()
 
     # Init background
     background = Background(s, int_screen, gfx)
@@ -74,11 +76,15 @@ def run_game():
 
             ship.update(dt)
 
-            gf.update_bullets(bullets, enemy_bullets, s, dt)
+            bullets.update(dt)
+            enemy_bullets.update(dt)
 
-            gf.check_collisions(ship, level.enemies, bullets, enemy_bullets)
+            gf.check_collisions(ship, level.enemies, bullets, enemy_bullets, gfx, effects)
 
-            gf.update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets, enemy_bullets)
+            effects.update(dt)
+
+            gf.update_screen(s, screen, int_screen, text, clock, background,
+                             level, ship, bullets, enemy_bullets, effects)
 
             status.update()
         else:

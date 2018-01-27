@@ -24,21 +24,35 @@ class GFX():
                         'r': temp.subsurface((size*2, 0, size, size))}
 
         # Asteroids
+        self.asteroids = []
         temp = [pygame.image.load('gfx/enemies/asteroid0.png').convert_alpha(),
                 pygame.image.load('gfx/enemies/asteroid1.png').convert_alpha()]
-
-        # Separate image in to list of animation frames
-        self.asteroids = []
         for image in temp:
-            size = image.get_rect()
-            list = []
-            for frame in range(size.width/size.height):
-                list.append(image.subsurface(size.height*frame, 0, size.height, size.height))
-            self.asteroids.append(list)
+            self.asteroids.append(self.load_animation(image))
+
+        # Bosses
+        self.boss1 = []
+        temp = pygame.image.load('gfx/enemies/boss1.png').convert_alpha()
+        self.boss1 = {'down': [temp.subsurface(0,0,128,128),
+                               temp.subsurface(128,0,128,128),
+                               temp.subsurface(256,0,128,128),
+                               temp.subsurface(384,0,128,128)],
+                      'right': [temp.subsurface(512,0,128,128),
+                                temp.subsurface(640, 0, 128, 128)],
+                      'up': [temp.subsurface(768,0,128,128),
+                             temp.subsurface(896,0,128,128),
+                             temp.subsurface(1024,0,128,128),
+                             temp.subsurface(1152,0,128,128)]}
 
         # Bullets
         self.bullet = pygame.image.load('gfx/bullet.png').convert_alpha()
         self.enemy_bullet1 = pygame.image.load('gfx/enemy_bullet1.png').convert_alpha()
+        self.enemy_bullet2 = pygame.image.load('gfx/enemy_bullet2.png').convert_alpha()
+
+        # Effects
+        self.fx_hits = [self.load_animation(pygame.image.load('gfx/effects/hit1.png').convert_alpha()),
+                        self.load_animation(pygame.image.load('gfx/effects/hit2.png').convert_alpha()),
+                        self.load_animation(pygame.image.load('gfx/effects/hit3.png').convert_alpha())]
 
         # Backgrounds
         self.background1 = pygame.image.load('gfx/backgrounds/background1.png').convert()
@@ -62,6 +76,13 @@ class GFX():
                              'l': pygame.mask.from_surface(self.shifter['l']),
                              'r': pygame.mask.from_surface(self.shifter['r'])}
 
+        self.boss1_mask = {}
+        for x in self.boss1.keys():
+            temp = []
+            for image in self.boss1[x]:
+                temp.append(pygame.mask.from_surface(image))
+            self.boss1_mask[x] = temp
+
         self.asteroids_mask = []
         for asteroid in self.asteroids:
             list = []
@@ -71,6 +92,16 @@ class GFX():
 
         self.bullet_mask = pygame.mask.from_surface(self.bullet)
         self.enemy_bullet1_mask = pygame.mask.from_surface(self.enemy_bullet1)
+
+    def load_animation(self, image):
+        """ Splits image into animation frames and returns them as a list """
+        size = image.get_rect()
+        list = []
+
+        for frame in range(size.width / size.height):
+            list.append(image.subsurface(size.height * frame, 0, size.height, size.height))
+
+        return list
 
 
 class Text():

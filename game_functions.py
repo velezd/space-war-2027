@@ -3,6 +3,7 @@ from pygame import sprite
 from sys import exit
 from time import time
 from bullet import Bullet
+from effects import hit
 
 
 def check_events(s, ship, bullets, gfx, status):
@@ -63,11 +64,14 @@ def update_bullets(bullets, enemy_bullets, s, dt):
             enemy_bullets.remove(bullet)
 
 
-
-def check_collisions(ship, enemies, bullets, enemy_bullets):
+def check_collisions(ship, enemies, bullets, enemy_bullets, gfx, effects):
     # Check collisions between bullets and enemies, bullets get removed automatically
     dict = pygame.sprite.groupcollide(enemies, bullets, False, True, pygame.sprite.collide_mask)
     for enemy in dict.keys():
+        # Create effects on impacting bullets
+        for bullet in dict[enemy]:
+            effects.add(hit.Hit([bullet.rect.centerx, bullet.rect.top], gfx))
+
         enemy.hit()
         if enemy.health <= 0:
             enemies.remove(enemy)
@@ -83,7 +87,7 @@ def check_collisions(ship, enemies, bullets, enemy_bullets):
         ship.killed()
 
 
-def update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets, enemy_bullets):
+def update_screen(s, screen, int_screen, text, clock, background, level, ship, bullets, enemy_bullets, effects):
     """Update images on the screen and flip to the new screen."""
     screen.fill((25,25,25))
 
@@ -101,6 +105,10 @@ def update_screen(s, screen, int_screen, text, clock, background, level, ship, b
 
     for bullet in enemy_bullets.sprites():
         bullet.blitme(int_screen)
+
+    # Draw effects
+    for effect in effects:
+        effect.blitme(int_screen)
 
     # Scale internal screen
     if s.scaling:

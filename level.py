@@ -1,6 +1,6 @@
 from time import time
 from pygame.sprite import Group, Sprite
-from enemies import asteroid, shifter
+from enemies import asteroid, shifter, boss
 
 
 class Level():
@@ -43,6 +43,9 @@ class Level():
 
                     elif char == 's':
                         self.enemies.add(shifter.Shifter(self.s, self.gfx, pos_x))
+
+                    elif char == '1':
+                        self.enemies.add(boss.Boss1(self.s, self.gfx))
 
         # Enemy update
         self.enemies.update(dt, enemy_bullets)

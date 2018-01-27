@@ -97,6 +97,7 @@ class Menu():
             status.game_running = True
         elif self.cursor_position == 1:
             print 'Continue'
+            status.game_running = True
         elif self.cursor_position == 2:
             print 'High Score'
         elif self.cursor_position == 3:
