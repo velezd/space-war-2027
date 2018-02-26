@@ -1,7 +1,6 @@
-from pygame.sprite import Group, Sprite
+from pygame.sprite import Sprite
 from time import time
-from random import randint, uniform, choice
-from bullet import BossBullet1
+from bullet import EnemyBullet
 
 
 class Boss1(Sprite):
@@ -37,7 +36,7 @@ class Boss1(Sprite):
         self.rect.centerx = self.pos_x
         self.rect.centery = self.pos_y
 
-    def update(self, dt, enemy_bullets):
+    def update(self, dt, enemy_bullets, ship):
         """Update movement and animation"""
         spd_y = 0
         spd_x = 0
@@ -81,9 +80,9 @@ class Boss1(Sprite):
 
                 # Shooting
                 if time() > self.shoot_timer1:
-                    position = [self.rect.left + 34 + (12 * self.canon),
-                                self.rect.centery + 50]
-                    enemy_bullets.add(BossBullet1(self.s, position, self.gfx, 0.15))
+                    position = [self.rect.left + 34 + (12 * self.canon), self.rect.centery + 50]
+                    target = [ship.rect.centerx, ship.rect.centery]
+                    enemy_bullets.add(EnemyBullet(position, self.gfx, 0.15, 2, target))
 
                     self.canon += 1
                     if self.canon > 4:

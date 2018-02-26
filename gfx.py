@@ -45,6 +45,9 @@ class GFX():
                              temp.subsurface(1152,0,128,128)]}
 
         # Bullets
+        self.bullets = [pygame.image.load('gfx/bullet.png').convert_alpha(),
+                        pygame.image.load('gfx/enemy_bullet1.png').convert_alpha(),
+                        pygame.image.load('gfx/enemy_bullet2.png').convert_alpha()]
         self.bullet = pygame.image.load('gfx/bullet.png').convert_alpha()
         self.enemy_bullet1 = pygame.image.load('gfx/enemy_bullet1.png').convert_alpha()
         self.enemy_bullet2 = pygame.image.load('gfx/enemy_bullet2.png').convert_alpha()
@@ -89,6 +92,10 @@ class GFX():
             for frame in asteroid:
                 list.append(pygame.mask.from_surface(frame))
             self.asteroids_mask.append(list)
+
+        self.bullets_mask = []
+        for bullet in self.bullets:
+            self.bullets_mask.append(pygame.mask.from_surface(bullet))
 
         self.bullet_mask = pygame.mask.from_surface(self.bullet)
         self.enemy_bullet1_mask = pygame.mask.from_surface(self.enemy_bullet1)

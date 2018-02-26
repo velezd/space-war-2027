@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 
-import pygame
 from gfx import *
-import game_functions as gf
 from settings import Settings
-from ship import Ship
-from background import Background
-from level import Level
+from game import Game
 from menu import Menu
 from status import GameStatus
-from pygame.sprite import Group
 #import profile
 
 
@@ -25,14 +20,14 @@ def run_game():
     else:
         screen = pygame.display.set_mode((s.screen_width, s.screen_height))
 
-    pygame.display.set_caption('Game!')
+    pygame.display.set_caption('Space War 2027')
 
     # Internal screen
     int_screen = pygame.Surface((s.int_screen_width, s.int_screen_height))
 
     # Init fonts
     text = Text(screen, s.font_main, 16, (255, 255, 255))
-    gf.show_loading(screen, text)
+    show_loading(screen, text)
 
     # Calculate internal scaling
     scale = s.screen_width / float(s.int_screen_width)
@@ -41,55 +36,57 @@ def run_game():
 
     # Init graphics
     gfx = GFX(s)
-
-    # Status
-    status = GameStatus()
-
-    # Init ship and bullets
-    ship = Ship(int_screen, s, gfx, status)
-    bullets = Group()
-    enemy_bullets = Group()
-    effects = Group()
-
-    # Init background
-    background = Background(s, int_screen, gfx)
-
     # Init game clock
     clock = pygame.time.Clock()
-
     # Init menu
-    menu = Menu(screen, int_screen, s, gfx)
-
-    # Init level
-    level = Level(s, gfx, int_screen)
+    menu = Menu(int_screen, s, gfx)
+    # Status
+    status = GameStatus()
+    # Init game itself
+    game = Game(s, gfx, int_screen, status)
 
     # Main loop
     while True:
         dt = clock.tick(60)     # time between frames, should alter speed of everything that is not based on real time
 
         if status.game_running:
-            background.update(dt)
-
-            level.update(dt, enemy_bullets)
-
-            gf.check_events(s, ship, bullets, gfx, status)
-
-            ship.update(dt)
-
-            bullets.update(dt)
-            enemy_bullets.update(dt)
-
-            gf.check_collisions(ship, level.enemies, bullets, enemy_bullets, gfx, effects)
-
-            effects.update(dt)
-
-            gf.update_screen(s, screen, int_screen, text, clock, background,
-                             level, ship, bullets, enemy_bullets, effects)
-
+            game.update(dt)
+            game.draw()
             status.update()
         else:
-            menu.update(status, dt)
+            menu.update(status, game, dt)
             menu.draw()
+
+        update_screen(s, screen, int_screen, text, clock)
+
+
+def update_screen(s, screen, int_screen, text, clock):
+    """Update images on the screen and flip to the new screen."""
+    screen.fill((25,25,25))
+
+    # Scale internal screen
+    if s.scaling:
+        int_screen = pygame.transform.scale(int_screen, (s.int_scale_width, s.int_scale_height))
+
+    # And put it on screen
+    rect = int_screen.get_rect()
+    rect.center = screen.get_rect().center
+    screen.blit(int_screen, rect)
+
+    # Print fps
+    text.write(str(int(clock.get_fps())), 5, 5)
+
+    # Flip buffer
+    pygame.display.flip()
+
+
+def show_loading(screen, text):
+    """Show loading screen, renders independently on rest of the game"""
+    screen.fill((0,0,0))
+    rect = screen.get_rect()
+    text.write('now loading...', rect.centerx, rect.centery, (255,255,255), origin='center')
+    pygame.display.flip()
+
 
 #profile.run('run_game()')
 run_game()

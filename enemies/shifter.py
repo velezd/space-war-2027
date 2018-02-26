@@ -32,7 +32,7 @@ class Shifter(Sprite):
         self.shoot_at = randint(1, self.shoot_chance)
         self.size = self.rect.height
 
-    def update(self, dt, enemy_bullets):
+    def update(self, dt, enemy_bullets, ship):
         """Update movement, animation and shooting"""
         # move the shifter
         self.rect.bottom += self.movement_speed * dt
@@ -59,7 +59,7 @@ class Shifter(Sprite):
         # shooting
         if not self.shooting:
             if self.shoot_at == randint(1, self.shoot_chance):
-                enemy_bullets.add(EnemyBullet(self.s, self, self.gfx, self.movement_speed*1.5))
+                enemy_bullets.add(EnemyBullet(self, self.gfx, self.movement_speed*1.5))
                 self.shooting = True
 
     def hit(self):

@@ -16,7 +16,7 @@ class Level():
         with open('levels/' + str(s.start_level), 'r') as file:
             self.level = file.read().splitlines()
 
-    def update(self, dt, enemy_bullets):
+    def update(self, dt, enemy_bullets, ship):
         # Enemy spawning and level progression
         if self.enemy_hold:
             if len(self.enemies) == 0:
@@ -48,7 +48,7 @@ class Level():
                         self.enemies.add(boss.Boss1(self.s, self.gfx))
 
         # Enemy update
-        self.enemies.update(dt, enemy_bullets)
+        self.enemies.update(dt, enemy_bullets, ship)
 
         # Get rid of enemies out of screen
         for sprite in self.enemies:

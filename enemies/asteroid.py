@@ -33,7 +33,7 @@ class Asteroid(Sprite):
         self.image = self.gfx.asteroids[self.i][self.frame]
         self.mask = self.gfx.asteroids_mask[self.i][self.frame]
 
-    def update(self, dt, enemy_bullets):
+    def update(self, dt, enemy_bullets, ship):
         """Update movement and animation"""
         # If time between frames elapsed - set image of the sprite to the next frame
         if self.timer < time():

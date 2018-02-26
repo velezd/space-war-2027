@@ -2,12 +2,11 @@ from time import time
 
 
 class Ship():
-    def __init__(self, screen, s, gfx, status):
-        """Inint the player ship and it's starting position"""
+    def __init__(self, screen, s, gfx):
+        """Init the player ship and it's starting position"""
         self.screen = screen
         self.s = s
         self.gfx = gfx
-        self.status = status
 
         # load the ships image and get it's rect
         self.image = gfx.ship['c_0']
@@ -66,5 +65,3 @@ class Ship():
         # Apply ship movement
         self.rect.centerx = self.pos_x
 
-    def killed(self):
-        self.status.lives -= 1
