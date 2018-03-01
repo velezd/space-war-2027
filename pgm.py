@@ -4,6 +4,7 @@ from gfx import *
 from settings import Settings
 from game import Game
 from menu import Menu
+from hud import HUD
 from status import GameStatus
 #import profile
 
@@ -25,9 +26,7 @@ def run_game():
     # Internal screen
     int_screen = pygame.Surface((s.int_screen_width, s.int_screen_height))
 
-    # Init fonts
-    text = Text(screen, s.font_main, 16, (255, 255, 255))
-    show_loading(screen, text)
+    show_loading(screen, s)
 
     # Calculate internal scaling
     scale = s.screen_width / float(s.int_screen_width)
@@ -45,6 +44,8 @@ def run_game():
     # Init game itself
     game = Game(s, gfx, int_screen, status)
 
+    hud = HUD(status, s, gfx, screen, clock)
+
     # Main loop
     while True:
         dt = clock.tick(60)     # time between frames, should alter speed of everything that is not based on real time
@@ -58,10 +59,10 @@ def run_game():
             menu.update(status, game, dt)
             menu.draw()
 
-        update_screen(s, screen, int_screen, text, clock)
+        update_screen(s, screen, int_screen, hud)
 
 
-def update_screen(s, screen, int_screen, text, clock):
+def update_screen(s, screen, int_screen, hud):
     """Update images on the screen and flip to the new screen."""
     screen.fill((25,25,25))
 
@@ -74,15 +75,16 @@ def update_screen(s, screen, int_screen, text, clock):
     rect.center = screen.get_rect().center
     screen.blit(int_screen, rect)
 
-    # Print fps
-    text.write(str(int(clock.get_fps())), 5, 5)
+    # Draw HUD
+    hud.draw()
 
     # Flip buffer
     pygame.display.flip()
 
 
-def show_loading(screen, text):
+def show_loading(screen, s):
     """Show loading screen, renders independently on rest of the game"""
+    text = Text(screen, s.font_main, 16, (255, 255, 255))
     screen.fill((0,0,0))
     rect = screen.get_rect()
     text.write('now loading...', rect.centerx, rect.centery, (255,255,255), origin='center')

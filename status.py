@@ -1,33 +1,51 @@
 from json import dumps, loads
-
+from time import time
 
 class GameStatus():
     """Class for keeping game status and high scores"""
     def __init__(self):
         self.game_running = False
-        self.health = 100
+        self.dead = False
+        self.dead_timer = 0
         self.lives = 3
         self.score = 0
         self.level = 'level1.json'
-        self.high_scores = [['1', '10000'],
-                            ['2', '9000'],
-                            ['3', '8000'],
-                            ['4', '7000'],
-                            ['5', '6000'],
-                            ['6', '5000'],
-                            ['7', '4000'],
-                            ['8', '3000'],
-                            ['9', '2000']]
+        self.high_scores = [['1', 10000],
+                            ['2', 9000],
+                            ['3', 8000],
+                            ['4', 7000],
+                            ['5', 6000],
+                            ['6', 5000],
+                            ['7', 4000],
+                            ['8', 3000],
+                            ['9', 2000]]
 
     def reset(self):
-        self.health = 100
+        self.dead = False
         self.lives = 3
         self.score = 0
         self.level = 'level1.json'
 
     def update(self):
-        if self.lives == 0:
+        # If dead and timer elapsed - stop game
+        if self.dead and self.dead_timer < time():
             self.game_running = False
+            return
+
+        if self.lives == 0:
+            # Add score to high scores - if high enough
+            if self.score > self.high_scores[-1][1]:
+                print 'New High Score!'
+                self.high_scores.append(['new', self.score])
+                self.high_scores = sorted(self.high_scores,  key=lambda x:x[1], reverse=True)
+                self.high_scores.remove(-1)
+
+                print self.high_scores
+
+            self.lives = 3
+            self.score = 0
+            self.dead = True
+            self.dead_timer = time() + 3
 
     def save(self):
         """ Save Game status to file """

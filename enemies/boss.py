@@ -28,6 +28,7 @@ class Boss1(Sprite):
         self.next_stage = False
         self.stage = 1
         self.health = 5000
+        self.reward = 2000
 
         self.shoot_timer1 = 0
         self.shoot_timer2 = 0

@@ -22,6 +22,7 @@ class Shifter(Sprite):
 
         # Stats
         self.health = 60
+        self.reward = 90
         self.max_evasion = 48
         self.anim_frame = 'r'
         self.evasion_speed = 0.09

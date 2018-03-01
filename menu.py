@@ -5,6 +5,7 @@ from gfx import Text
 from pygame.sprite import Group, Sprite
 from effects import stars
 
+
 class Menu():
     def __init__(self, int_screen, s, gfx):
         self.int_screen = int_screen
@@ -81,6 +82,9 @@ class Menu():
             status.game_running = True
         elif self.cursor_position == 1:
             print 'Continue'
+            if status.dead:
+                game.__init__(self.s, self.gfx, self.int_screen, status)
+                status.dead = False
             status.game_running = True
         elif self.cursor_position == 2:
             print 'High Score'

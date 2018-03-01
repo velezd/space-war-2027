@@ -86,6 +86,7 @@ class Game():
 
             enemy.hit()
             if enemy.health <= 0:
+                self.status.score += enemy.reward
                 self.level.enemies.remove(enemy)
 
         # check collisions between player and enemy bullets
@@ -116,15 +117,16 @@ class Game():
                 effect.blitme(self.int_screen)
 
     def update(self, dt):
-        if self.level.update(dt, self.enemy_bullets, self.ship):
-            self.check_events()
-            self.ship.update(dt)
-            self.bullets.update(dt)
-            self.enemy_bullets.update(dt)
-            self.check_collisions()
-            self.effects.update(dt)
-            if self.level.ending:
-                self.status.level = self.level.next_level
-                return True
+        if not self.status.dead:
+            if self.level.update(dt, self.enemy_bullets, self.ship):
+                self.check_events()
+                self.ship.update(dt)
+                self.bullets.update(dt)
+                self.enemy_bullets.update(dt)
+                self.check_collisions()
+                self.effects.update(dt)
+                if self.level.ending:
+                    self.status.level = self.level.next_level
+                    return True
 
         return False
