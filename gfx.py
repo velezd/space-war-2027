@@ -1,4 +1,5 @@
 import pygame
+import tarfile
 
 
 class GFX():
@@ -57,8 +58,7 @@ class GFX():
                         self.load_animation(pygame.image.load('gfx/effects/hit3.png').convert_alpha())]
 
         # Story images
-        self.story = {'story1': pygame.image.load('gfx/story/story1.png').convert(),
-                      'story2': pygame.image.load('gfx/story/story2.png').convert()}
+        self.story = self.load_story()
 
         # Backgrounds
         self.background = {}
@@ -113,6 +113,18 @@ class GFX():
             list.append(image.subsurface(size.height * frame, 0, size.height, size.height))
 
         return list
+
+    def load_story(self):
+        '''
+        Loads all story images from story.pak (tar.gz file)
+        :return: Dictionary {'filename w/o extension': image}
+        '''
+        story = {}
+        with tarfile.open('gfx/story/story.pak', 'r:gz') as storytar:
+            for file in storytar.getnames():
+                name = file.split('.')[0]
+                story[name] = pygame.image.load(storytar.extractfile(file)).convert()
+        return story
 
 
 class Text():
