@@ -50,7 +50,8 @@ def run_game():
         dt = clock.tick(60)     # time between frames, should alter speed of everything that is not based on real time
 
         if status.game_running:
-            game.update(dt)
+            if game.update(dt): # If update is true level ended -> start new level
+                game = Game(s, gfx,int_screen, status)
             game.draw()
             status.update()
         else:

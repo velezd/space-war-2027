@@ -3,7 +3,6 @@ from time import time
 from bullet import Bullet
 from effects import hit
 from ship import Ship
-from background import Background
 from level import Level
 import pygame
 
@@ -15,11 +14,8 @@ class Game():
         self.int_screen = int_screen
         self.status = status
 
-        # Init background
-        self.background = Background(self.s, self.int_screen, self.gfx)
-
         # Init level
-        self.level = Level(self.s, self.gfx, self.int_screen)
+        self.level = Level(self.s, self.gfx, self.int_screen, self.status.level)
 
         # Init ship and bullets
         self.ship = Ship(self.int_screen, self.s, self.gfx)
@@ -104,29 +100,31 @@ class Game():
 
     def draw(self):
         """ Draw game objects to internal screen """
-        # Draw background
-        self.background.draw()
         # Draw level
-        self.level.draw()
-        # Draw ship
-        self.ship.blitme()
+        if self.level.draw():
+            # Draw ship
+            self.ship.blitme()
 
-        # Draw bullets
-        for bullet in self.bullets.sprites():
-            bullet.blitme(self.int_screen)
-        for bullet in self.enemy_bullets.sprites():
-            bullet.blitme(self.int_screen)
+            # Draw bullets
+            for bullet in self.bullets.sprites():
+                bullet.blitme(self.int_screen)
+            for bullet in self.enemy_bullets.sprites():
+                bullet.blitme(self.int_screen)
 
-        # Draw effects
-        for effect in self.effects:
-            effect.blitme(self.int_screen)
+            # Draw effects
+            for effect in self.effects:
+                effect.blitme(self.int_screen)
 
     def update(self, dt):
-        self.background.update(dt)
-        self.level.update(dt, self.enemy_bullets, self.ship)
-        self.check_events()
-        self.ship.update(dt)
-        self.bullets.update(dt)
-        self.enemy_bullets.update(dt)
-        self.check_collisions()
-        self.effects.update(dt)
+        if self.level.update(dt, self.enemy_bullets, self.ship):
+            self.check_events()
+            self.ship.update(dt)
+            self.bullets.update(dt)
+            self.enemy_bullets.update(dt)
+            self.check_collisions()
+            self.effects.update(dt)
+            if self.level.ending:
+                self.status.level = self.level.next_level
+                return True
+
+        return False

@@ -7,9 +7,9 @@ from effects import stars
 
 class Background():
     """Manage and draw screen background"""
-    def __init__(self, s, screen, gfx):
+    def __init__(self, s, screen, image):
         self.s = s
-        self.background = gfx.background1
+        self.background = image
         self.back_rect = self.background.get_rect()
         self.back_rect.centerx = randint(0, s.int_screen_width)
         self.back_rect.bottom = 0

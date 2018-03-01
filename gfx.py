@@ -5,7 +5,6 @@ class GFX():
     """Inits and stores all graphics"""
     def __init__(self, s):
         # -- Loading images --
-
         # Player ship
         temp = pygame.image.load('gfx/ship0.png').convert_alpha()
         size = temp.get_rect().height
@@ -57,9 +56,14 @@ class GFX():
                         self.load_animation(pygame.image.load('gfx/effects/hit2.png').convert_alpha()),
                         self.load_animation(pygame.image.load('gfx/effects/hit3.png').convert_alpha())]
 
+        # Story images
+        self.story = {'story1': pygame.image.load('gfx/story/story1.png').convert(),
+                      'story2': pygame.image.load('gfx/story/story2.png').convert()}
+
         # Backgrounds
-        self.background1 = pygame.image.load('gfx/backgrounds/background1.png').convert()
-        self.background1 = pygame.transform.scale(self.background1, (s.int_screen_width, s.int_screen_width))
+        self.background = {}
+        tmp = pygame.image.load('gfx/backgrounds/background1.png').convert()
+        self.background['galaxy'] = pygame.transform.scale(tmp, (s.int_screen_width, s.int_screen_width))
 
         self.menu_background = {'front': pygame.image.load('gfx/menu_background/ship_med_front.png').convert_alpha(),
                                 'back': pygame.image.load('gfx/menu_background/ship_big_back.png').convert_alpha()}

@@ -5,7 +5,6 @@ from gfx import Text
 from pygame.sprite import Group, Sprite
 from effects import stars
 
-
 class Menu():
     def __init__(self, int_screen, s, gfx):
         self.int_screen = int_screen

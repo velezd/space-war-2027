@@ -8,7 +8,7 @@ class GameStatus():
         self.health = 100
         self.lives = 3
         self.score = 0
-        self.level = 1
+        self.level = 'level1.json'
         self.high_scores = [['1', '10000'],
                             ['2', '9000'],
                             ['3', '8000'],
@@ -23,7 +23,7 @@ class GameStatus():
         self.health = 100
         self.lives = 3
         self.score = 0
-        self.level = 1
+        self.level = 'level1.json'
 
     def update(self):
         if self.lives == 0:
