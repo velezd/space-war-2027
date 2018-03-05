@@ -4,17 +4,22 @@ from time import time
 from gfx import Text
 from pygame.sprite import Group, Sprite
 from effects import stars
+from highscores import HSEntry, HSDisplay
 
 
 class Menu():
-    def __init__(self, int_screen, s, gfx):
+    def __init__(self, int_screen, s, gfx, status):
         self.int_screen = int_screen
         self.rect = self.int_screen.get_rect()
         self.s = s
+        self.status = status
         self.gfx = gfx
         self.background = BackgroundImage(self.int_screen, self.gfx.menu_background['front'], [1,1])
         self.font = Text(self.int_screen, s.font_main, 16, (255, 255, 255))
         self.cursor = MenuLogo(gfx)
+
+        self.hs_entry = HSEntry(int_screen, self.status, self.s)
+        self.hs_display = HSDisplay(int_screen, self.status, self.s)
 
         self.stars = Group()
         stars.generate_init_stars(self.stars, 20, self.s, self.int_screen, 47)
@@ -36,32 +41,46 @@ class Menu():
         # Draw background image
         self.background.draw(self.int_screen)
 
-        # Draw menu items
-        for x in range(len(self.menu_items)):
-            self.font.write(self.menu_items[x], self.rect.left + 64, self.rect.top + 100 + (x * self.menu_separation))
+        if self.status.show_hs:
+            if self.status.new_hs:
+                self.hs_entry.draw()
+            else:
+                self.hs_display.draw()
+        else:
 
-        # Draw cursor
-        self.cursor.draw(self.int_screen)
+            # Draw menu items
+            for x in range(len(self.menu_items)):
+                self.font.write(self.menu_items[x], self.rect.left + 64, self.rect.top + 100 + (x * self.menu_separation))
 
-    def update(self, status, game, dt):
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    if self.cursor_position != 0:
-                        self.cursor_position -= 1
-                elif event.key == pygame.K_DOWN:
-                    if self.cursor_position != len(self.menu_items)-1:
-                        self.cursor_position += 1
-                elif event.key == pygame.K_RETURN:
-                    self.evaluate(status, game)
+            # Draw cursor
+            self.cursor.draw(self.int_screen)
 
-        # Cursor animation and position
-        self.cursor.rect.left = self.rect.left + 16
-        self.cursor.rect.top = self.rect.top + 92 + self.cursor_position * self.menu_separation
-        self.cursor.update()
+    def update(self, game, dt):
+        if self.status.show_hs:
+            if self.status.new_hs:
+                self.hs_entry.update()
+            else:
+                self.hs_display.update()
+        else:
+
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        if self.cursor_position != 0:
+                            self.cursor_position -= 1
+                    elif event.key == pygame.K_DOWN:
+                        if self.cursor_position != len(self.menu_items)-1:
+                            self.cursor_position += 1
+                    elif event.key == pygame.K_RETURN:
+                        self.evaluate(game)
+
+            # Cursor animation and position
+            self.cursor.rect.left = self.rect.left + 16
+            self.cursor.rect.top = self.rect.top + 92 + self.cursor_position * self.menu_separation
+            self.cursor.update()
 
         # Stars animation
         self.stars.update(dt)
@@ -74,20 +93,21 @@ class Menu():
             if not star.is_on(self.int_screen):
                 self.stars.remove(star)
 
-    def evaluate(self, status, game):
+    def evaluate(self, game):
         if self.cursor_position == 0:
             print 'New Game'
-            status.reset()
-            game.__init__(self.s, self.gfx, self.int_screen, status)
-            status.game_running = True
+            self.status.reset()
+            game.__init__(self.s, self.gfx, self.int_screen, self.status)
+            self.status.game_running = True
         elif self.cursor_position == 1:
             print 'Continue'
-            if status.dead:
-                game.__init__(self.s, self.gfx, self.int_screen, status)
-                status.dead = False
-            status.game_running = True
+            if self.status.dead:
+                game.__init__(self.s, self.gfx, self.int_screen, self.status)
+                self.status.dead = False
+            self.status.game_running = True
         elif self.cursor_position == 2:
             print 'High Score'
+            self.status.show_hs = True
         elif self.cursor_position == 3:
             print 'Exit'
             exit()

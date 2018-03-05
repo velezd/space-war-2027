@@ -1,11 +1,14 @@
 from json import dumps, loads
 from time import time
 
+
 class GameStatus():
     """Class for keeping game status and high scores"""
     def __init__(self):
         self.game_running = False
         self.dead = False
+        self.new_hs = False
+        self.show_hs = False
         self.dead_timer = 0
         self.lives = 3
         self.score = 0
@@ -35,16 +38,11 @@ class GameStatus():
         if self.lives == 0:
             # Add score to high scores - if high enough
             if self.score > self.high_scores[-1][1]:
-                print 'New High Score!'
-                self.high_scores.append(['new', self.score])
-                self.high_scores = sorted(self.high_scores,  key=lambda x:x[1], reverse=True)
-                self.high_scores.remove(-1)
-
-                print self.high_scores
+                self.new_hs = True
 
             self.lives = 3
-            self.score = 0
             self.dead = True
+            self.show_hs = True
             self.dead_timer = time() + 3
 
     def save(self):

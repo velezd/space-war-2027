@@ -2,7 +2,7 @@
   "name": "Enemy at the gates",
   "music": "energy",
   "background": "galaxy",
-  "nextlevel": "level1.json",
+  "nextlevel": "",
   "prestory": [
     {"image": "level1_pre1", "time": 7},
     {"image": "level1_pre2", "time": 7},

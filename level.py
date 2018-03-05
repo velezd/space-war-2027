@@ -83,7 +83,7 @@ class Level():
                 # Show story
                 self.show_story(self.story_post)
                 # No more story - end game
-                if len(self.story_post) == 0:
+                if len(self.story_post) == 0 and self.story_timer < time():
                     self.ending = True
                     return True
 

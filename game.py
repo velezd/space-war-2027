@@ -126,7 +126,10 @@ class Game():
                 self.check_collisions()
                 self.effects.update(dt)
                 if self.level.ending:
-                    self.status.level = self.level.next_level
-                    return True
+                    if self.level.next_level == '':
+                        self.status.lives = 0
+                    else:
+                        self.status.level = self.level.next_level
+                        return True
 
         return False

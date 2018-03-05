@@ -37,10 +37,10 @@ def run_game():
     gfx = GFX(s)
     # Init game clock
     clock = pygame.time.Clock()
-    # Init menu
-    menu = Menu(int_screen, s, gfx)
     # Status
     status = GameStatus()
+    # Init menu
+    menu = Menu(int_screen, s, gfx, status)
     # Init game itself
     game = Game(s, gfx, int_screen, status)
 
@@ -56,7 +56,7 @@ def run_game():
             game.draw()
             status.update()
         else:
-            menu.update(status, game, dt)
+            menu.update(game, dt)
             menu.draw()
 
         update_screen(s, screen, int_screen, hud)
