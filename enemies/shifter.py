@@ -5,10 +5,11 @@ from bullet import EnemyBullet
 
 
 class Shifter(Sprite):
-    def __init__(self, s, gfx, pos_x):
+    def __init__(self, s, gfx, sfx, pos_x):
         """Init shifter - slowly moving enemy, constantly evading left and right, shooting randomly"""
         super(Shifter, self).__init__()
         self.gfx = gfx
+        self.sfx = sfx
         self.s = s
         self.movement_speed = s.shifter_speed
 
@@ -62,6 +63,7 @@ class Shifter(Sprite):
             if self.shoot_at == randint(1, self.shoot_chance):
                 enemy_bullets.add(EnemyBullet(self, self.gfx, self.movement_speed*1.5))
                 self.shooting = True
+                self.sfx.blaster2.play()
 
     def hit(self):
         self.health -= 20

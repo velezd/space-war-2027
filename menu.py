@@ -8,12 +8,13 @@ from highscores import HSEntry, HSDisplay
 
 
 class Menu():
-    def __init__(self, int_screen, s, gfx, status):
+    def __init__(self, int_screen, s, gfx, sfx, status):
         self.int_screen = int_screen
         self.rect = self.int_screen.get_rect()
         self.s = s
         self.status = status
         self.gfx = gfx
+        self.sfx = sfx
         self.background = BackgroundImage(self.int_screen, self.gfx.menu_background['front'], [1,1])
         self.font = Text(self.int_screen, s.font_main, 16, (255, 255, 255))
         self.cursor = MenuLogo(gfx)
@@ -97,12 +98,12 @@ class Menu():
         if self.cursor_position == 0:
             print 'New Game'
             self.status.reset()
-            game.__init__(self.s, self.gfx, self.int_screen, self.status)
+            game.__init__(self.s, self.gfx, self.sfx, self.int_screen, self.status)
             self.status.game_running = True
         elif self.cursor_position == 1:
             print 'Continue'
             if self.status.dead:
-                game.__init__(self.s, self.gfx, self.int_screen, self.status)
+                game.__init__(self.s, self.gfx, self.sfx, self.int_screen, self.status)
                 self.status.dead = False
             self.status.game_running = True
         elif self.cursor_position == 2:

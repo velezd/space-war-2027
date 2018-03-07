@@ -8,7 +8,7 @@ import pygame
 
 
 class Level():
-    def __init__(self, s, gfx, int_screen, filename=''):
+    def __init__(self, s, gfx, sfx, int_screen, filename=''):
         if not filename:
             filename = str(s.start_level)
 
@@ -17,6 +17,7 @@ class Level():
 
         self.s = s
         self.gfx = gfx
+        self.sfx = sfx
         self.int_screen = int_screen
         self.timer = 0
         self.enemies = Group()
@@ -24,6 +25,7 @@ class Level():
         self.show_name = False
 
         self.starting = True
+        self.music_started = False
         self.ending = False
         self.story_image = None
         self.story_timer = 0
@@ -36,6 +38,7 @@ class Level():
         self.story_post = level['poststory']
         self.next_level = level['nextlevel']
         self.name = level['name']
+        pygame.mixer.music.load(sfx.music[level['music']])
 
     def update(self, dt, enemy_bullets, ship):
         '''
@@ -45,6 +48,9 @@ class Level():
         :param ship:
         :return: True if the game should be running, False if not
         '''
+        if not self.music_started:
+            self.music_started = True
+            pygame.mixer.music.play(-1)
 
         # Things to do before level starts
         if self.starting:
@@ -85,6 +91,7 @@ class Level():
                 # No more story - end game
                 if len(self.story_post) == 0 and self.story_timer < time():
                     self.ending = True
+                    pygame.mixer.music.stop()
                     return True
 
         # Background update
@@ -115,10 +122,10 @@ class Level():
                         self.enemies.add(asteroid.Asteroid(self.s, self.gfx, pos_x))
 
                     elif char == 's':
-                        self.enemies.add(shifter.Shifter(self.s, self.gfx, pos_x))
+                        self.enemies.add(shifter.Shifter(self.s, self.gfx, self.sfx, pos_x))
 
                     elif char == '1':
-                        self.enemies.add(boss.Boss1(self.s, self.gfx))
+                        self.enemies.add(boss.Boss1(self.s, self.gfx, self.sfx))
 
         # Enemy update
         self.enemies.update(dt, enemy_bullets, ship)

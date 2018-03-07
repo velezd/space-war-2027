@@ -8,14 +8,15 @@ import pygame
 
 
 class Game():
-    def __init__(self, s, gfx, int_screen, status):
+    def __init__(self, s, gfx, sfx, int_screen, status):
         self.s = s
         self.gfx = gfx
+        self.sfx = sfx
         self.int_screen = int_screen
         self.status = status
 
         # Init level
-        self.level = Level(self.s, self.gfx, self.int_screen, self.status.level)
+        self.level = Level(self.s, self.gfx, self.sfx, self.int_screen, self.status.level)
 
         # Init ship and bullets
         self.ship = Ship(self.int_screen, self.s, self.gfx)
@@ -61,6 +62,7 @@ class Game():
         # Add bullet
         if len(self.bullets) < self.s.bullet_count:
             self.bullets.add(Bullet(self.s, self.ship, self.gfx))
+            self.sfx.blaster1.play()
 
     def update_bullets(self, dt):
         """Manage bullets"""
@@ -88,16 +90,19 @@ class Game():
             if enemy.health <= 0:
                 self.status.score += enemy.reward
                 self.level.enemies.remove(enemy)
+                self.sfx.boom1.play()
 
         # check collisions between player and enemy bullets
         dict = pygame.sprite.spritecollide(self.ship, self.enemy_bullets, True, pygame.sprite.collide_mask)
         for bullet in dict:
             self.status.lives -= 1
+            self.sfx.boom1.play()
 
         # Check collisions between player and enemies
         list = pygame.sprite.spritecollide(self.ship, self.level.enemies, True, pygame.sprite.collide_mask)
         if list:
             self.status.lives -= 1
+            self.sfx.boom1.play()
 
     def draw(self):
         """ Draw game objects to internal screen """

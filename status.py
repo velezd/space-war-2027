@@ -1,6 +1,6 @@
 from json import dumps, loads
 from time import time
-
+from pygame import mixer
 
 class GameStatus():
     """Class for keeping game status and high scores"""
@@ -36,6 +36,7 @@ class GameStatus():
             return
 
         if self.lives == 0:
+            mixer.music.stop()
             # Add score to high scores - if high enough
             if self.score > self.high_scores[-1][1]:
                 self.new_hs = True

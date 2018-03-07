@@ -4,11 +4,12 @@ from bullet import EnemyBullet
 
 
 class Boss1(Sprite):
-    def __init__(self, s, gfx):
+    def __init__(self, s, gfx, sfx):
         """Init asteroid - square sprite with random image and rotation speed"""
         super(Boss1, self).__init__()
         self.s = s
         self.gfx = gfx
+        self.sfx = sfx
 
         self.img_down = self.gfx.boss1['down']
         self.img_right = self.gfx.boss1['right']
@@ -84,6 +85,7 @@ class Boss1(Sprite):
                     position = [self.rect.left + 34 + (12 * self.canon), self.rect.centery + 50]
                     target = [ship.rect.centerx, ship.rect.centery]
                     enemy_bullets.add(EnemyBullet(position, self.gfx, 0.15, 2, target))
+                    self.sfx.blaster2.play()
 
                     self.canon += 1
                     if self.canon > 4:

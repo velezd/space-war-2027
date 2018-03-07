@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from gfx import *
+from sfx import SFX
 from settings import Settings
 from game import Game
 from menu import Menu
@@ -13,6 +14,9 @@ def run_game():
     """Init game and run game"""
     # init config
     s = Settings()
+
+    # pre-init sound
+    pygame.mixer.pre_init(44100, -16, 2, 2048)
 
     # init pygame and screen
     pygame.init()
@@ -33,6 +37,8 @@ def run_game():
     s.int_scale_width = int(s.int_screen_width * scale)
     s.int_scale_height = int(s.int_screen_height * scale)
 
+    # Init sound
+    sfx = SFX()
     # Init graphics
     gfx = GFX(s)
     # Init game clock
@@ -40,9 +46,9 @@ def run_game():
     # Status
     status = GameStatus()
     # Init menu
-    menu = Menu(int_screen, s, gfx, status)
+    menu = Menu(int_screen, s, gfx, sfx, status)
     # Init game itself
-    game = Game(s, gfx, int_screen, status)
+    game = Game(s, gfx, sfx, int_screen, status)
 
     hud = HUD(status, s, gfx, screen, clock)
 
@@ -52,7 +58,7 @@ def run_game():
 
         if status.game_running:
             if game.update(dt): # If update is true level ended -> start new level
-                game = Game(s, gfx,int_screen, status)
+                game = Game(s, gfx, sfx, int_screen, status)
             game.draw()
             status.update()
         else:
