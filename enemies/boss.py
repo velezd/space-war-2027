@@ -1,16 +1,119 @@
 from pygame.sprite import Sprite
 from time import time
 from bullet import EnemyBullet
+from math import cos, sin, radians
+from mymath import rt_angle, isclose
+import pygame
 
 
-class Boss1(Sprite):
+class Boss(Sprite):
+    """ Boss sprite parent class """
+    def __init__(self):
+        """ Init enemy boss """
+        super(Boss, self).__init__()
+        self.rect = pygame.Rect(0, 0, 0, 0)
+        self.image = pygame.Surface((0, 0))
+        self.mask = pygame.Mask((0, 0))
+        # Movement variables
+        self.pos_x = 0
+        self.pos_y = 0
+        self.speedx = 0
+        self.speedy = 0
+        self.animation_speed = 0
+        self.animation_frame = 0
+        # Animation waypoint in absolute coordinates
+        self.target_x = 0
+        self.target_y = 0
+
+    def init_animation(self, animation_start):
+        """ Clear movement/animation variables
+
+        :param animation_start: Absolute coordinates [x,y]
+        :return: Nothing
+        """
+        self.pos_x = animation_start[0]
+        self.pos_y = animation_start[1]
+        self.rect.centerx = self.pos_x
+        self.rect.centery = self.pos_y
+        self.animation_frame = 0
+
+    def calculate_movement(self, animation):
+        """ Calculates movement speeds x,y from the relative position of the next animation waypoint
+
+        :param animation: List of animation frames
+        :return: Nothing
+        """
+        frame = animation[self.animation_frame]
+
+        self.target_x = self.rect.centerx + frame[0]
+        self.target_y = self.rect.centery + frame[1]
+
+        # Get angle to target
+        angle = rt_angle(frame[0], frame[1])
+
+        # Perform vectoring based on angle
+        angle += 90
+        angle = radians(angle)
+        self.speedx = cos(angle) * self.animation_speed * -1
+        self.speedy = sin(angle) * self.animation_speed
+
+        # Going up
+        if frame[1] < 0:
+            self.speedy *= -1
+
+    def animate(self, animation, animation_start, dt):
+        """ Plays animation - moves sprite, changes image and mask
+
+        :param animation: List of animation frames
+        :param animation_start: Starting point of the animation [x,y]
+        :param dt: time between frames
+        :return: True if animation is ended, False if not
+        """
+        anim_end = False
+        # if reached animation waypoint
+        if isclose(self.target_x, self.pos_x, 0.10, 0.3) and isclose(self.target_y, self.pos_y, 0.10, 0.3):
+            self.animation_frame += 1
+
+            if len(animation) == self.animation_frame:
+                anim_end = True
+                # loop animation
+                self.init_animation(animation_start)
+
+            # Set new image and mask
+            self.image = animation[self.animation_frame][2]
+            self.mask = animation[self.animation_frame][3]
+            # Calculate new movement speeds
+            self.calculate_movement(animation)
+
+        # calculate movement
+        self.pos_x += self.speedx * dt
+        self.pos_y += self.speedy * dt
+        # apply movement
+        self.rect.centerx = self.pos_x
+        self.rect.centery = self.pos_y
+
+        return anim_end
+
+
+class Boss1(Boss):
     def __init__(self, s, gfx, sfx):
-        """Init asteroid - square sprite with random image and rotation speed"""
+        """ Init enemy boss """
         super(Boss1, self).__init__()
         self.s = s
         self.gfx = gfx
         self.sfx = sfx
 
+        # Properties
+        self.stage = 1
+        self.next_stage = None
+        self.health = 4000
+        self.reward = 2000
+        self.animation_speed = 0.06
+        # Shooting
+        self.shoot_timer1 = 0
+        self.canon = 1
+
+        # Set images and rect
         self.img_down = self.gfx.boss1['down']
         self.img_right = self.gfx.boss1['right']
         self.img_up = self.gfx.boss1['up']
@@ -22,65 +125,55 @@ class Boss1(Sprite):
         self.image = self.img_down[0]
         self.mask = self.mask_down[0]
         self.rect = self.image.get_rect()
-        self.pos_x = 96.0
-        self.pos_y = -64.0
-        self.moving = 'down'
 
-        self.next_stage = False
-        self.stage = 1
-        self.health = 5000
-        self.reward = 2000
+        # Movement animations - relative waypoints for movement and image for that movement
+        self.animation1_start = [96, -64]
+        self.animation1 = [[0, 128, self.img_down[0], self.mask_down[0]],
+                           [5, 20, self.img_down[1], self.mask_down[1]],
+                           [10, 20, self.img_down[2], self.mask_down[2]],
+                           [20, 10, self.img_down[3], self.mask_down[3]],
+                           [20, 5, self.img_right[0], self.mask_right[0]],
+                           [349, 0, self.img_right[1], self.mask_right[1]],
+                           [20, -5, self.img_right[0], self.mask_right[0]],
+                           [20, -10, self.img_up[0], self.mask_up[0]],
+                           [10, -20, self.img_up[1], self.mask_up[1]],
+                           [5, -20, self.img_up[2], self.mask_up[2]],
+                           [0, -128, self.img_up[3], self.mask_up[3]]]
 
-        self.shoot_timer1 = 0
-        self.shoot_timer2 = 0
-        self.canon = 1
+        self.animation2_start = [192, -64]
+        self.animation2 = [[0, 32, self.img_down[0], self.mask_down[0]],
+                           [5, 20, self.img_down[1], self.mask_down[1]],
+                           [10, 20, self.img_down[2], self.mask_down[2]],
+                           [20, 10, self.img_down[3], self.mask_down[3]],
+                           [20, 5, self.img_right[0], self.mask_right[0]],
+                           [154, 0, self.img_right[1], self.mask_right[1]],
+                           [20, -5, self.img_right[0], self.mask_right[0]],
+                           [20, -10, self.img_up[0], self.mask_up[0]],
+                           [10, -20, self.img_up[1], self.mask_up[1]],
+                           [5, -20, self.img_up[2], self.mask_up[2]],
+                           [0, -32, self.img_up[3], self.mask_up[3]]]
 
-        self.rect.centerx = self.pos_x
-        self.rect.centery = self.pos_y
+        self.init_animation(self.animation1_start)
+        self.calculate_movement(self.animation1)
 
     def update(self, dt, enemy_bullets, ship):
-        """Update movement and animation"""
-        spd_y = 0
-        spd_x = 0
-        # First stage of the boss
+        """ Update movement, animation and shooting
+
+        :param dt: time between frames
+        :param enemy_bullets: Sprite group
+        :param ship: Sprite - player
+        :return: Nothing
+        """
+        # Stage 1
         if self.stage == 1:
-            # When under x health switch next stage flag
-            if self.health < 2500 and not self.next_stage:
-                self.next_stage = True
-            # Go down
-            if self.moving == 'down':
-                if self.pos_y >= 60:
-                    self.moving = 'right'
-                    self.image = self.img_right[0]
-                    self.mask = self.mask_right[0]
-                elif self.pos_y >= 55:
-                    self.image = self.img_down[3]
-                    self.mask = self.mask_down[3]
-                    spd_y = 0.02
-                elif self.pos_y >= 50:
-                    self.image = self.img_down[2]
-                    self.mask = self.mask_down[2]
-                    spd_y = 0.05
-                elif self.pos_y >= 45:
-                    self.image = self.img_down[1]
-                    self.mask = self.mask_down[1]
-                    spd_y = 0.07
-                else:
-                    spd_y = 0.1
+            if self.animate(self.animation1, self.animation1_start, dt):
+                if self.health < 2000:
+                    self.stage = 2
+                    self.init_animation(self.animation2_start)
+                    self.calculate_movement(self.animation2)
 
-            # go right and shoot
-            if self.moving == 'right':
-                if self.pos_x >= 504:
-                    self.moving = 'up'
-                elif self.pos_x >= 500:
-                    self.image = self.img_right[0]
-                    self.mask = self.mask_right[0]
-                elif self.pos_x >= 100:
-                    self.image = self.img_right[1]
-                    self.mask = self.mask_right[1]
-                spd_x = 0.05
-
-                # Shooting
+            # Shooting
+            if self.animation_frame == 5:
                 if time() > self.shoot_timer1:
                     position = [self.rect.left + 34 + (12 * self.canon), self.rect.centery + 50]
                     target = [ship.rect.centerx, ship.rect.centery]
@@ -94,43 +187,23 @@ class Boss1(Sprite):
                     else:
                         self.shoot_timer1 = time() + 0.25
 
-            # go up
-            if self.moving == 'up':
-                if self.pos_y <= -64:
-                    if self.next_stage:
-                        self.stage = 2
-                        self.next_stage = False
-                    else:
-                        self.image = self.img_down[0]
-                        self.mask = self.mask_down[0]
-                        self.pos_x = 96.0
-                        self.pos_y = -64.0
-                        self.moving = 'down'
-                elif self.pos_y <= 45:
-                    self.image = self.img_up[3]
-                    self.mask = self.mask_up[3]
-                    spd_y = -0.1
-                elif self.pos_y <= 50:
-                    self.image = self.img_up[2]
-                    self.mask = self.mask_up[2]
-                    spd_y = -0.07
-                elif self.pos_y <= 55:
-                    self.image = self.img_up[1]
-                    self.mask = self.mask_up[1]
-                    spd_y = -0.05
-                else:
-                    self.image = self.img_up[0]
-                    self.mask = self.mask_up[0]
-                    spd_y = -0.02
-        if self.stage == 2:
-            spd_y = 0.2
+        # Stage 2
+        elif self.stage == 2:
+            self.animate(self.animation2, self.animation2_start, dt)
 
-        # calculate movement
-        self.pos_x += spd_x * dt
-        self.pos_y += spd_y * dt
-        # apply movement
-        self.rect.centerx = self.pos_x
-        self.rect.centery = self.pos_y
+            # Shooting
+            if self.animation_frame == 5:
+                if time() > self.shoot_timer1:
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 46, self.rect.centery + 50],
+                                                  self.gfx, 0.15, 2, -30))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 58, self.rect.centery + 50],
+                                                  self.gfx, 0.15, 2, -10))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 70, self.rect.centery + 50],
+                                                  self.gfx, 0.15, 2, 10))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 82, self.rect.centery + 50],
+                                                  self.gfx, 0.15, 2, 30))
+                    self.sfx.blaster2.play()
+                    self.shoot_timer1 = time() + 0.8
 
     def hit(self):
         self.health -= 20
