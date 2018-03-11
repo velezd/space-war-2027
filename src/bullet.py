@@ -101,6 +101,9 @@ class EnemyBullet(Sprite):
         self.pos_y += self.speedy * dt
         self.rect.y = self.pos_y
 
+        if self.rect.top > CFG().int_screen_height:
+            self.kill()
+
     def blitme(self, screen):
         """Draw the bullet"""
         screen.blit(self.image, self.rect)
