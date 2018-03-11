@@ -34,11 +34,6 @@ class Background():
             self.timer = time() + self.gen_speed
             self.stars.add(stars.Star(self.screen, 180))
 
-        # Remove stars
-        for star in self.stars:
-            if not star.is_on(self.screen):
-                self.stars.remove(star)
-
     def draw(self):
         self.screen.fill((0, 0, 0))
 

@@ -82,16 +82,12 @@ class Menu():
             self.cursor.rect.top = self.rect.top + 92 + self.cursor_position * self.menu_separation
             self.cursor.update()
 
-        # Stars animation
+        # Update stars
         self.stars.update(dt)
         # Add stars
         if self.timer < time():
             self.timer = time() + self.gen_speed
             self.stars.add(stars.Star(self.int_screen, 47))
-        # Remove stars
-        for star in self.stars:
-            if not star.is_on(self.int_screen):
-                self.stars.remove(star)
 
     def evaluate(self, game):
         if self.cursor_position == 0:
