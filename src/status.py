@@ -12,9 +12,9 @@ class GameStatus():
         self.new_hs = False
         self.show_hs = False
         self.dead_timer = 0
-        self.lives = 3
+        self.lives = CFG().start_lives
         self.score = 0
-        self.level = 'level1.json'
+        self.level = CFG().start_level
         self.high_scores = [['1', 10000],
                             ['2', 9000],
                             ['3', 8000],
@@ -27,9 +27,9 @@ class GameStatus():
 
     def reset(self):
         self.dead = False
-        self.lives = 3
+        self.lives = CFG().start_lives
         self.score = 0
-        self.level = 'level1.json'
+        self.level = CFG().start_level
 
     def update(self):
         # If dead and timer elapsed - stop game
@@ -43,7 +43,7 @@ class GameStatus():
             if self.score > self.high_scores[-1][1]:
                 self.new_hs = True
 
-            self.lives = 3
+            self.lives = CFG().start_lives
             self.dead = True
             self.show_hs = True
             self.dead_timer = time() + 3

@@ -42,7 +42,8 @@ class CFG():
         self.font_main = path.join(self.path_fonts, 'PressStart2P.ttf')
 
         # Game settings
-        self.start_level = 1
+        self.start_level = 'level1.json'
+        self.start_lives = 3
         self.spawn_speed = 0.5
         self.level_width = 15
 
