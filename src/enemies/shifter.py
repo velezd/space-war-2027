@@ -1,20 +1,19 @@
-from pygame.sprite import Group, Sprite
-from time import time
-from random import randint, uniform, choice
+from random import randint
+from pygame.sprite import  Sprite
 from bullet import EnemyBullet
+from gfx import GFX
+from sfx import SFX
+from config import CFG
 
 
 class Shifter(Sprite):
-    def __init__(self, s, gfx, sfx, pos_x):
+    def __init__(self, pos_x):
         """Init shifter - slowly moving enemy, constantly evading left and right, shooting randomly"""
         super(Shifter, self).__init__()
-        self.gfx = gfx
-        self.sfx = sfx
-        self.s = s
-        self.movement_speed = s.shifter_speed
+        self.movement_speed = CFG().shifter_speed
 
-        self.image = self.gfx.shifter['r']
-        self.mask = self.gfx.shifter_mask['r']
+        self.image = GFX().shifter['r']
+        self.mask = GFX().shifter_mask['r']
 
         # Set starting position
         self.rect = self.image.get_rect()
@@ -55,15 +54,15 @@ class Shifter(Sprite):
                 self.anim_frame = 'r'
 
             # change sprite image
-            self.image = self.gfx.shifter[self.anim_frame]
-            self.mask = self.gfx.shifter_mask[self.anim_frame]
+            self.image = GFX().shifter[self.anim_frame]
+            self.mask = GFX().shifter_mask[self.anim_frame]
 
         # shooting
         if not self.shooting:
             if self.shoot_at == randint(1, self.shoot_chance):
-                enemy_bullets.add(EnemyBullet(self, self.gfx, self.movement_speed*1.5))
+                enemy_bullets.add(EnemyBullet(self, self.movement_speed*1.5))
                 self.shooting = True
-                self.sfx.blaster2.play()
+                SFX().blaster2.play()
 
     def hit(self):
         self.health -= 20

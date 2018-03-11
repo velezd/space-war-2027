@@ -1,16 +1,16 @@
 from time import time
+from config import CFG
+from gfx import GFX
 
 
 class Ship():
-    def __init__(self, screen, s, gfx):
+    def __init__(self, screen):
         """Init the player ship and it's starting position"""
         self.screen = screen
-        self.s = s
-        self.gfx = gfx
 
         # load the ships image and get it's rect
-        self.image = gfx.ship['c_0']
-        self.mask = gfx.ship_mask['c_0']
+        self.image = GFX().ship['c_0']
+        self.mask = GFX().ship_mask['c_0']
         self.rect = self.image.get_rect()
         self.screen_rect = self.screen.get_rect()
 
@@ -41,27 +41,26 @@ class Ship():
 
         # Calculating ship movement and setting correct image
         if self.moving_left and self.rect.left > 0:
-            self.pos_x -= self.s.ship_speed * dt
-            self.image = self.gfx.ship['l_0']
-            self.mask = self.gfx.ship_mask['l_0']
+            self.pos_x -= CFG().ship_speed * dt
+            self.image = GFX().ship['l_0']
+            self.mask = GFX().ship_mask['l_0']
         elif self.moving_right and self.rect.right < self.screen_rect.right:
-            self.pos_x += self.s.ship_speed * dt
-            self.image = self.gfx.ship['r_0']
-            self.mask = self.gfx.ship_mask['r_0']
+            self.pos_x += CFG().ship_speed * dt
+            self.image = GFX().ship['r_0']
+            self.mask = GFX().ship_mask['r_0']
         elif self.moving_center:
-            self.image = self.gfx.ship['c_0']
-            self.mask = self.gfx.ship_mask['c_0']
+            self.image = GFX().ship['c_0']
+            self.mask = GFX().ship_mask['c_0']
             self.moving_center = False
 
         # if shooting use special ship image
         if self.shooting:
             if self.moving_left:
-                self.image = self.gfx.ship['l_1']
+                self.image = GFX().ship['l_1']
             elif self.moving_right:
-                self.image = self.gfx.ship['r_1']
+                self.image = GFX().ship['r_1']
             else:
-                self.image = self.gfx.ship['c_1']
+                self.image = GFX().ship['c_1']
 
         # Apply ship movement
         self.rect.centerx = self.pos_x
-

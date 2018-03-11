@@ -1,11 +1,25 @@
 from json import loads
+from os import path
+from utilities import singleton
 
 
-class Settings():
+@singleton
+class CFG():
     """A class to store all settings"""
 
     def __init__(self):
         """Init the game's settings"""
+        # Paths
+        self.path_gfx = '../gfx/'
+        self.path_fonts = '../gfx/fonts/'
+        self.path_bg = '../gfx/backgrounds'
+        self.path_bg_menu = '../gfx/backgrounds/menu'
+        self.path_sfx = '../sfx/'
+        self.path_music = '../sfx/music/'
+        self.path_levels = '../levels/'
+        self.path_settings = '../settings.json'
+        self.path_save = '../save.json'
+
         # Screen settings
         self.screen_width = 1024
         self.screen_height = 768
@@ -25,7 +39,7 @@ class Settings():
         self.bullet_count = 10
 
         # Fonts
-        self.font_main = './fonts/PressStart2P.ttf'
+        self.font_main = path.join(self.path_fonts, 'PressStart2P.ttf')
 
         # Game settings
         self.start_level = 1
@@ -41,7 +55,7 @@ class Settings():
     def load(self):
         """ Load Game settings from file """
         try:
-            with open('settings.json', 'r') as file:
+            with open(self.path_settings, 'r') as file:
                 data = loads(file.read())
 
             self.screen_width = int(data['screen_width'])

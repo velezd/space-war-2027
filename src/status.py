@@ -1,6 +1,8 @@
 from json import dumps, loads
 from time import time
 from pygame import mixer
+from config import CFG
+
 
 class GameStatus():
     """Class for keeping game status and high scores"""
@@ -56,7 +58,7 @@ class GameStatus():
         js_data = dumps(data, indent=4, separators=(',', ': '))
 
         try:
-            with open('save.json', 'w') as file:
+            with open(CFG().path_save, 'w') as file:
                 file.write(js_data)
         except IOError:
             print 'Can\'t save game and high scores'
@@ -64,7 +66,7 @@ class GameStatus():
     def load(self):
         """ Load Game status from file """
         try:
-            with open('save.json', 'r') as file:
+            with open(CFG().path_save, 'r') as file:
                 data = loads(file.read())
 
             self.lives = data['lives']

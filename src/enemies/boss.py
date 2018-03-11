@@ -2,8 +2,10 @@ from pygame.sprite import Sprite
 from time import time
 from bullet import EnemyBullet
 from math import cos, sin, radians
-from mymath import rt_angle, isclose
+from utilities import rt_angle, isclose
 import pygame
+from gfx import GFX
+from sfx import SFX
 
 
 class Boss(Sprite):
@@ -71,7 +73,7 @@ class Boss(Sprite):
         """
         anim_end = False
         # if reached animation waypoint
-        if isclose(self.target_x, self.pos_x, 0.10, 0.3) and isclose(self.target_y, self.pos_y, 0.10, 0.3):
+        if isclose(self.target_x, self.pos_x, 0.10, 0.8) and isclose(self.target_y, self.pos_y, 0.10, 0.8):
             self.animation_frame += 1
 
             if len(animation) == self.animation_frame:
@@ -82,7 +84,7 @@ class Boss(Sprite):
             # Set new image and mask
             self.image = animation[self.animation_frame][2]
             self.mask = animation[self.animation_frame][3]
-            # Calculate new movement speeds
+            # Calculate new movement speedssfx
             self.calculate_movement(animation)
 
         # calculate movement
@@ -96,13 +98,9 @@ class Boss(Sprite):
 
 
 class Boss1(Boss):
-    def __init__(self, s, gfx, sfx):
+    def __init__(self):
         """ Init enemy boss """
         super(Boss1, self).__init__()
-        self.s = s
-        self.gfx = gfx
-        self.sfx = sfx
-
         # Properties
         self.stage = 1
         self.next_stage = None
@@ -114,13 +112,13 @@ class Boss1(Boss):
         self.canon = 1
 
         # Set images and rect
-        self.img_down = self.gfx.boss1['down']
-        self.img_right = self.gfx.boss1['right']
-        self.img_up = self.gfx.boss1['up']
+        self.img_down = GFX().boss1['down']
+        self.img_right = GFX().boss1['right']
+        self.img_up = GFX().boss1['up']
 
-        self.mask_down = self.gfx.boss1_mask['down']
-        self.mask_right = self.gfx.boss1_mask['right']
-        self.mask_up = self.gfx.boss1_mask['up']
+        self.mask_down = GFX().boss1_mask['down']
+        self.mask_right = GFX().boss1_mask['right']
+        self.mask_up = GFX().boss1_mask['up']
 
         self.image = self.img_down[0]
         self.mask = self.mask_down[0]
@@ -177,8 +175,8 @@ class Boss1(Boss):
                 if time() > self.shoot_timer1:
                     position = [self.rect.left + 34 + (12 * self.canon), self.rect.centery + 50]
                     target = [ship.rect.centerx, ship.rect.centery]
-                    enemy_bullets.add(EnemyBullet(position, self.gfx, 0.15, 2, target))
-                    self.sfx.blaster2.play()
+                    enemy_bullets.add(EnemyBullet(position, 0.15, 2, target))
+                    SFX().blaster2.play()
 
                     self.canon += 1
                     if self.canon > 4:
@@ -194,15 +192,11 @@ class Boss1(Boss):
             # Shooting
             if self.animation_frame == 5:
                 if time() > self.shoot_timer1:
-                    enemy_bullets.add(EnemyBullet([self.rect.left + 46, self.rect.centery + 50],
-                                                  self.gfx, 0.15, 2, -30))
-                    enemy_bullets.add(EnemyBullet([self.rect.left + 58, self.rect.centery + 50],
-                                                  self.gfx, 0.15, 2, -10))
-                    enemy_bullets.add(EnemyBullet([self.rect.left + 70, self.rect.centery + 50],
-                                                  self.gfx, 0.15, 2, 10))
-                    enemy_bullets.add(EnemyBullet([self.rect.left + 82, self.rect.centery + 50],
-                                                  self.gfx, 0.15, 2, 30))
-                    self.sfx.blaster2.play()
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 46, self.rect.centery + 50], 0.15, 2, -30))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 58, self.rect.centery + 50], 0.15, 2, -10))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 70, self.rect.centery + 50], 0.15, 2, 10))
+                    enemy_bullets.add(EnemyBullet([self.rect.left + 82, self.rect.centery + 50], 0.15, 2, 30))
+                    SFX().blaster2.play()
                     self.shoot_timer1 = time() + 0.8
 
     def hit(self):

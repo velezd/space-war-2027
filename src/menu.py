@@ -5,25 +5,24 @@ from gfx import Text
 from pygame.sprite import Group, Sprite
 from effects import stars
 from highscores import HSEntry, HSDisplay
+from config import CFG
+from gfx import GFX
 
 
 class Menu():
-    def __init__(self, int_screen, s, gfx, sfx, status):
+    def __init__(self, int_screen, status):
         self.int_screen = int_screen
         self.rect = self.int_screen.get_rect()
-        self.s = s
         self.status = status
-        self.gfx = gfx
-        self.sfx = sfx
-        self.background = BackgroundImage(self.int_screen, self.gfx.menu_background['front'], [1,1])
-        self.font = Text(self.int_screen, s.font_main, 16, (255, 255, 255))
-        self.cursor = MenuLogo(gfx)
+        self.background = BackgroundImage(self.int_screen, GFX().menu_background['front'], [1,1])
+        self.font = Text(self.int_screen, CFG().font_main, 16, (255, 255, 255))
+        self.cursor = MenuLogo()
 
-        self.hs_entry = HSEntry(int_screen, self.status, self.s)
-        self.hs_display = HSDisplay(int_screen, self.status, self.s)
+        self.hs_entry = HSEntry(int_screen, self.status)
+        self.hs_display = HSDisplay(int_screen, self.status)
 
         self.stars = Group()
-        stars.generate_init_stars(self.stars, 20, self.s, self.int_screen, 47)
+        stars.generate_init_stars(self.stars, 20, self.int_screen, 47)
         self.gen_speed = 0.1
         self.timer = 0
         self.menu_separation = 32
@@ -88,7 +87,7 @@ class Menu():
         # Add stars
         if self.timer < time():
             self.timer = time() + self.gen_speed
-            self.stars.add(stars.Star(self.s, self.int_screen, 47))
+            self.stars.add(stars.Star(self.int_screen, 47))
         # Remove stars
         for star in self.stars:
             if not star.is_on(self.int_screen):
@@ -96,21 +95,21 @@ class Menu():
 
     def evaluate(self, game):
         if self.cursor_position == 0:
-            print 'New Game'
+            # New Game
             self.status.reset()
-            game.__init__(self.s, self.gfx, self.sfx, self.int_screen, self.status)
+            game.__init__(self.int_screen, self.status)
             self.status.game_running = True
         elif self.cursor_position == 1:
-            print 'Continue'
+            # Continue
             if self.status.dead:
-                game.__init__(self.s, self.gfx, self.sfx, self.int_screen, self.status)
+                game.__init__(self.int_screen, self.status)
                 self.status.dead = False
             self.status.game_running = True
         elif self.cursor_position == 2:
-            print 'High Score'
+            # High Score
             self.status.show_hs = True
         elif self.cursor_position == 3:
-            print 'Exit'
+            # Exit
             exit()
 
 
@@ -148,10 +147,9 @@ class BackgroundImage():
 
 class MenuLogo(Sprite):
     """Spinning logo that marks menu selection"""
-    def __init__(self, gfx):
+    def __init__(self):
         super(MenuLogo, self).__init__()
-        self.gfx = gfx
-        self.image = self.gfx.logo
+        self.image = GFX().logo
         self.rect = self.image.get_rect()
         self.size = self.rect.height
 
@@ -172,7 +170,7 @@ class MenuLogo(Sprite):
             if self.frame == self.num_frames:
                 self.frame = 0
 
-            self.image = self.gfx.logo.subsurface((self.size * self.frame, 0, self.size, self.size))
+            self.image = GFX().logo.subsurface((self.size * self.frame, 0, self.size, self.size))
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)

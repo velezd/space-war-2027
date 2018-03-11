@@ -1,10 +1,11 @@
 from gfx import Text
 import pygame
+from config import CFG
 
 
 class HSEntry():
     """ Show 3 letter name entry dialog """
-    def __init__(self, int_screen, status, s):
+    def __init__(self, int_screen, status):
         """ Init dialog
 
         :param int_screen: Internal screen
@@ -25,8 +26,8 @@ class HSEntry():
         self.x = 30
         self.y = 220
 
-        self.font1 = Text(self.int_screen, s.font_main, 16, (255, 255, 255))
-        self.font2 = Text(self.int_screen, s.font_main, 40, (255, 255, 255))
+        self.font1 = Text(self.int_screen, CFG().font_main, 16, (255, 255, 255))
+        self.font2 = Text(self.int_screen, CFG().font_main, 40, (255, 255, 255))
 
         self.cursor_surf = pygame.Surface((20,20))
         self.cursor_surf.fill(self.highlight_color)
@@ -99,7 +100,7 @@ class HSEntry():
 
 class HSDisplay():
     """ Show highscores """
-    def __init__(self, int_screen, status, s):
+    def __init__(self, int_screen, status):
         """ Init text, set dimensions
 
         :param int_screen: Internal screen
@@ -108,7 +109,7 @@ class HSDisplay():
         """
         self.int_screen = int_screen
         self.status = status
-        self.font = Text(self.int_screen, s.font_main, 16, (255, 255, 255))
+        self.font = Text(self.int_screen, CFG().font_main, 16, (255, 255, 255))
         self.y = 40
         self.spacing = 25
         self.x_name = 210

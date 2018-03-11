@@ -1,25 +1,24 @@
+import pygame
 from pygame.sprite import Group
 from time import time
 from bullet import Bullet
 from effects import hit
 from ship import Ship
 from level import Level
-import pygame
+from config import CFG
+from sfx import SFX
 
 
 class Game():
-    def __init__(self, s, gfx, sfx, int_screen, status):
-        self.s = s
-        self.gfx = gfx
-        self.sfx = sfx
+    def __init__(self, int_screen, status):
         self.int_screen = int_screen
         self.status = status
 
         # Init level
-        self.level = Level(self.s, self.gfx, self.sfx, self.int_screen, self.status.level)
+        self.level = Level(self.int_screen, self.status.level)
 
         # Init ship and bullets
-        self.ship = Ship(self.int_screen, self.s, self.gfx)
+        self.ship = Ship(self.int_screen)
         self.bullets = Group()
         self.enemy_bullets = Group()
         self.effects = Group()
@@ -60,9 +59,9 @@ class Game():
         # Set shooting timer
         self.ship.shooting_timer = time() + 0.1
         # Add bullet
-        if len(self.bullets) < self.s.bullet_count:
-            self.bullets.add(Bullet(self.s, self.ship, self.gfx))
-            self.sfx.blaster1.play()
+        if len(self.bullets) < CFG().bullet_count:
+            self.bullets.add(Bullet(self.ship))
+            SFX().blaster1.play()
 
     def update_bullets(self, dt):
         """Manage bullets"""
@@ -75,7 +74,7 @@ class Game():
                 self.bullets.remove(bullet)
 
         for bullet in self.enemy_bullets:
-            if bullet.rect.top >= self.s.int_screen_height:
+            if bullet.rect.top >= CFG().int_screen_height:
                 self.enemy_bullets.remove(bullet)
 
     def check_collisions(self):
@@ -84,25 +83,25 @@ class Game():
         for enemy in dict.keys():
             # Create effects on impacting bullets
             for bullet in dict[enemy]:
-                self.effects.add(hit.Hit([bullet.rect.centerx, bullet.rect.top], self.gfx))
+                self.effects.add(hit.Hit([bullet.rect.centerx, bullet.rect.top]))
 
             enemy.hit()
             if enemy.health <= 0:
                 self.status.score += enemy.reward
                 self.level.enemies.remove(enemy)
-                self.sfx.boom1.play()
+                SFX().boom1.play()
 
         # check collisions between player and enemy bullets
         dict = pygame.sprite.spritecollide(self.ship, self.enemy_bullets, True, pygame.sprite.collide_mask)
         for bullet in dict:
             self.status.lives -= 1
-            self.sfx.boom1.play()
+            SFX().boom1.play()
 
         # Check collisions between player and enemies
         list = pygame.sprite.spritecollide(self.ship, self.level.enemies, True, pygame.sprite.collide_mask)
         if list:
             self.status.lives -= 1
-            self.sfx.boom1.play()
+            SFX().boom1.play()
 
     def draw(self):
         """ Draw game objects to internal screen """

@@ -1,12 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 from random import randint
 from math import cos, sin, radians
-from pygame.sprite import Sprite
 
 
 class Star(Sprite):
     """ Class for running stars, for background or foreground """
-    def __init__(self, s, screen, angle=0, position=None):
+    def __init__(self, screen, angle=0, position=None):
         """ Star(s Settings, screen Surface, angle int(0-359), position (x int,y int))
         Color and speed is random. Stars run towards defined angle:
               0
@@ -123,11 +123,11 @@ class Star(Sprite):
         return is_on
 
 
-def generate_init_stars(group, num, s, screen, angle):
+def generate_init_stars(group, num, screen, angle):
     """ Spawns defined number of stars randomly on screen,
         used for initial population of the screen """
     rect = screen.get_rect()
     for n in range(num):
         x = randint(0, rect.width)
         y = randint(0, rect.height)
-        group.add(Star(s, screen, angle, (x,y)))
+        group.add(Star(screen, angle, (x,y)))

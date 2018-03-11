@@ -2,6 +2,8 @@
 import Tkinter as tk
 from json import loads, dumps
 from sys import exit
+from os import chdir
+import subprocess
 
 
 def get_resolutions(ratio):
@@ -9,6 +11,7 @@ def get_resolutions(ratio):
     ratio = round(ratio, 4)
     resolutions = {1.7786: ['1366x768'],
                    1.7778: ['1280x720', '1600x900', '1920x1080', '2560x1440', '3840x2160'],
+                   2.3704: ['1280x720', '1600x900', '1920x1080', '2560x1440', '3840x2160'],
                    1.6: ['1280x800', '1440x900', '1680x1050', '1920x1200'],
                    1.25: ['1280x1024']}
 
@@ -122,4 +125,5 @@ app = Application()
 app.root.mainloop()
 
 # Start game
-execfile('pgm.py')
+chdir('src')
+subprocess.call('./sw2027.py')

@@ -1,25 +1,28 @@
 from pygame.sprite import Sprite
 from pygame.transform import rotate
 from pygame.mask import from_surface
-from math import cos, sin, radians, asin, degrees, sqrt
+from math import cos, sin, radians
+from utilities import rt_angle
+from config import CFG
+from gfx import GFX
 
 
 class Bullet(Sprite):
     """A class to manage bullets from the ship"""
 
-    def __init__(self, s, ship, gfx):
+    def __init__(self, ship):
         super(Bullet, self).__init__()
 
         # Create bullet at the correct position
-        self.image = gfx.bullets[0]
-        self.mask = gfx.bullets_mask[0]
+        self.image = GFX().bullets[0]
+        self.mask = GFX().bullets_mask[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = ship.rect.centerx
         self.rect.bottom = ship.rect.top
 
         # Attributes
         self.pos_y = float(self.rect.y)
-        self.speed = s.bullet_speed
+        self.speed = CFG().bullet_speed
 
     def update(self, dt):
         """Move the bullet on screen"""
@@ -36,7 +39,7 @@ class Bullet(Sprite):
 
 class EnemyBullet(Sprite):
     """A class to manage enemy bullets"""
-    def __init__(self, position, gfx, speed, look=1, target=None):
+    def __init__(self, position, speed, look=1, target=None):
         """ Create and aim bullet
 
         Target angle is -90 left, 0 straight down, 90 right
@@ -49,8 +52,8 @@ class EnemyBullet(Sprite):
         super(EnemyBullet, self).__init__()
 
         # Set selected image, mask and rect
-        self.image = gfx.bullets[look]
-        self.mask = gfx.bullets_mask[look]
+        self.image = GFX().bullets[look]
+        self.mask = GFX().bullets_mask[look]
         self.rect = self.image.get_rect()
 
         # Set starting position
@@ -73,10 +76,7 @@ class EnemyBullet(Sprite):
         else:
             if isinstance(target, list):
                 # Calculate angle to target
-                a = target[0] - self.rect.x
-                b = target[1] - self.rect.y
-                c = sqrt(a ** 2 + b ** 2)
-                self.angle = degrees(asin(a / c))
+                self.angle = rt_angle(target[0] - self.rect.x, target[1] - self.rect.y)
             else:
                 self.angle = target
 

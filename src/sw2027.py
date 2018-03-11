@@ -1,56 +1,57 @@
 #!/usr/bin/env python
 
-from gfx import *
-from sfx import SFX
-from settings import Settings
+import gfx
+import sfx
+from config import CFG
 from game import Game
 from menu import Menu
 from hud import HUD
 from status import GameStatus
+import pygame
 #import profile
 
 
 def run_game():
     """Init game and run game"""
     # init config
-    s = Settings()
+    CFG()
 
     # pre-init sound
     pygame.mixer.pre_init(44100, -16, 2, 2048)
 
     # init pygame and screen
     pygame.init()
-    if s.fullscreen:
-        screen = pygame.display.set_mode((s.screen_width, s.screen_height), pygame.FULLSCREEN)
+    if CFG().fullscreen:
+        screen = pygame.display.set_mode((CFG().screen_width, CFG().screen_height), pygame.FULLSCREEN)
     else:
-        screen = pygame.display.set_mode((s.screen_width, s.screen_height))
+        screen = pygame.display.set_mode((CFG().screen_width, CFG().screen_height))
 
     pygame.display.set_caption('Space War 2027')
 
     # Internal screen
-    int_screen = pygame.Surface((s.int_screen_width, s.int_screen_height))
+    int_screen = pygame.Surface((CFG().int_screen_width, CFG().int_screen_height))
 
-    show_loading(screen, s)
+    show_loading(screen)
 
     # Calculate internal scaling
-    scale = s.screen_width / float(s.int_screen_width)
-    s.int_scale_width = int(s.int_screen_width * scale)
-    s.int_scale_height = int(s.int_screen_height * scale)
+    scale = CFG().screen_width / float(CFG().int_screen_width)
+    CFG().int_scale_width = int(CFG().int_screen_width * scale)
+    CFG().int_scale_height = int(CFG().int_screen_height * scale)
 
     # Init sound
-    sfx = SFX()
+    sfx.SFX()
     # Init graphics
-    gfx = GFX(s)
+    gfx.GFX()
     # Init game clock
     clock = pygame.time.Clock()
     # Status
     status = GameStatus()
     # Init menu
-    menu = Menu(int_screen, s, gfx, sfx, status)
+    menu = Menu(int_screen, status)
     # Init game itself
-    game = Game(s, gfx, sfx, int_screen, status)
+    game = Game(int_screen, status)
 
-    hud = HUD(status, s, gfx, screen, clock)
+    hud = HUD(status, screen, clock)
 
     # Main loop
     while True:
@@ -58,23 +59,23 @@ def run_game():
 
         if status.game_running:
             if game.update(dt): # If update is true level ended -> start new level
-                game = Game(s, gfx, sfx, int_screen, status)
+                game = Game(int_screen, status)
             game.draw()
             status.update()
         else:
             menu.update(game, dt)
             menu.draw()
 
-        update_screen(s, screen, int_screen, hud)
+        update_screen(screen, int_screen, hud)
 
 
-def update_screen(s, screen, int_screen, hud):
+def update_screen(screen, int_screen, hud):
     """Update images on the screen and flip to the new screen."""
     screen.fill((25,25,25))
 
     # Scale internal screen
-    if s.scaling:
-        int_screen = pygame.transform.scale(int_screen, (s.int_scale_width, s.int_scale_height))
+    if CFG().scaling:
+        int_screen = pygame.transform.scale(int_screen, (CFG().int_scale_width, CFG().int_scale_height))
 
     # And put it on screen
     rect = int_screen.get_rect()
@@ -88,9 +89,9 @@ def update_screen(s, screen, int_screen, hud):
     pygame.display.flip()
 
 
-def show_loading(screen, s):
+def show_loading(screen):
     """Show loading screen, renders independently on rest of the game"""
-    text = Text(screen, s.font_main, 16, (255, 255, 255))
+    text = gfx.Text(screen, CFG().font_main, 16, (255, 255, 255))
     screen.fill((0,0,0))
     rect = screen.get_rect()
     text.write('now loading...', rect.centerx, rect.centery, (255,255,255), origin='center')

@@ -1,15 +1,16 @@
 from pygame.sprite import Sprite
 from time import time
 from random import randint
+from gfx import GFX
 
 
 class Hit(Sprite):
-    """Hit effect sprite"""
+    """ Hit effect sprite """
 
-    def __init__(self, position, gfx):
+    def __init__(self, position):
         super(Hit, self).__init__()
 
-        self.animation = gfx.fx_hits[randint(0, len(gfx.fx_hits) - 1)]
+        self.animation = GFX().fx_hits[randint(0, len(GFX().fx_hits) - 1)]
         self.frame = 0
         self.image = self.animation[0]
         self.rect = self.image.get_rect()
@@ -18,7 +19,7 @@ class Hit(Sprite):
         self.timer = 0
 
     def update(self, dt):
-        """Update animation"""
+        """ Update animation """
         if time() > self.timer:
             if self.frame < len(self.animation):
                 self.image = self.animation[self.frame]
@@ -28,5 +29,5 @@ class Hit(Sprite):
                 self.kill()
 
     def blitme(self, screen):
-        """Draw the effect"""
+        """ Draw the effect """
         screen.blit(self.image, self.rect)

@@ -1,23 +1,23 @@
+import pygame
 from time import time
-from pygame.sprite import Group, Sprite
+from os import path
 from json import loads
+from pygame.sprite import Group
 from enemies import asteroid, shifter, boss
 from background import Background
-from gfx import Text
-import pygame
+from config import CFG
+from gfx import GFX, Text
+from sfx import SFX
 
 
 class Level():
-    def __init__(self, s, gfx, sfx, int_screen, filename=''):
+    def __init__(self, int_screen, filename=''):
         if not filename:
-            filename = str(s.start_level)
+            filename = str(CFG().start_level)
 
-        with open('levels/' + filename, 'r') as file:
+        with open(path.join(CFG().path_levels, filename), 'r') as file:
             level = loads(file.read())
 
-        self.s = s
-        self.gfx = gfx
-        self.sfx = sfx
         self.int_screen = int_screen
         self.timer = 0
         self.enemies = Group()
@@ -30,15 +30,15 @@ class Level():
         self.story_image = None
         self.story_timer = 0
 
-        self.text = Text(int_screen, s.font_main, 16, (255, 255, 255))
+        self.text = Text(int_screen, CFG().font_main, 16, (255, 255, 255))
 
         self.layout = level['layout']
-        self.background = Background(self.s, self.int_screen, self.gfx.background[level['background']])
+        self.background = Background(self.int_screen, GFX().background[level['background']])
         self.story_pre = level['prestory']
         self.story_post = level['poststory']
         self.next_level = level['nextlevel']
         self.name = level['name']
-        pygame.mixer.music.load(sfx.music[level['music']])
+        pygame.mixer.music.load(SFX().music[level['music']])
 
     def update(self, dt, enemy_bullets, ship):
         '''
@@ -103,7 +103,7 @@ class Level():
                 self.enemy_hold = False
         else:
             if self.timer < time() and len(self.layout) != 0:
-                self.timer = time() + self.s.spawn_speed
+                self.timer = time() + CFG().spawn_speed
 
                 line = self.layout.pop(-1)
                 position = 0
@@ -111,7 +111,7 @@ class Level():
                     position += 1
                     # If there is enemy calculate it's x position
                     if char != '-':
-                        spacing = self.s.int_screen_width / self.s.level_width
+                        spacing = CFG().int_screen_width / CFG().level_width
                         pos_x = spacing * position - spacing / 2
                     # Stop spawning until all enemies are gone
                     if char == '_':
@@ -119,20 +119,20 @@ class Level():
                         break
 
                     if char == 'a':
-                        self.enemies.add(asteroid.Asteroid(self.s, self.gfx, pos_x))
+                        self.enemies.add(asteroid.Asteroid(pos_x))
 
                     elif char == 's':
-                        self.enemies.add(shifter.Shifter(self.s, self.gfx, self.sfx, pos_x))
+                        self.enemies.add(shifter.Shifter(pos_x))
 
                     elif char == '1':
-                        self.enemies.add(boss.Boss1(self.s, self.gfx, self.sfx))
+                        self.enemies.add(boss.Boss1())
 
         # Enemy update
         self.enemies.update(dt, enemy_bullets, ship)
 
         # Get rid of enemies out of screen
         for sprite in self.enemies:
-            if sprite.rect.top > self.s.int_screen_height:
+            if sprite.rect.top > CFG().int_screen_height:
                 self.enemies.remove(sprite)
 
         return True
@@ -153,5 +153,5 @@ class Level():
     def show_story(self, story):
         if len(story):
             page = story.pop(0)
-            self.story_image = self.gfx.story[page['image']]
+            self.story_image = GFX().story[page['image']]
             self.story_timer = time() + page['time']

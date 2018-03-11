@@ -21,3 +21,19 @@ def rt_angle(a, b):
     :return: Angle alpha
     """
     return degrees(asin(a / sqrt(a ** 2 + b ** 2)))
+
+
+def singleton(cls):
+    """ Decorator for creating one instance of class accessible from anywhere without additional initializing
+
+    :param cls: Class
+    :return: function returning instance
+    """
+    instances = {}
+
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+
+    return getinstance

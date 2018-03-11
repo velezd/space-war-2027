@@ -1,15 +1,14 @@
 from gfx import Text
+from config import CFG
 
 
 class HUD():
-    def __init__(self, status, s, gfx, screen, clock):
+    def __init__(self, status, screen, clock):
         self.status = status
         self.screen = screen
         self.rect = screen.get_rect()
-        self.s = s
-        self.gfx = gfx
         self.clock = clock
-        self.text = Text(self.screen, s.font_main, 16, (255, 255, 255))
+        self.text = Text(self.screen, CFG().font_main, 16, (255, 255, 255))
 
     def draw(self):
         if self.status.game_running:
