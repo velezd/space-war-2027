@@ -8,6 +8,7 @@ from background import Background
 from config import CFG
 from gfx import GFX, Text
 from sfx import SFX
+from events import Events
 
 
 class Level():
@@ -55,9 +56,8 @@ class Level():
             # Showing story - do nothing
             if self.story_timer > time():
                 # Any keypress will skip story image
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        self.story_timer = 0
+                if Events().key_pressed:
+                    self.story_timer = 0
                 return False
             else:
                 self.story_image = None

@@ -7,6 +7,7 @@ from ship import Ship
 from level import Level
 from config import CFG
 from sfx import SFX
+from events import Events
 
 
 class Game():
@@ -25,31 +26,20 @@ class Game():
 
     def check_events(self):
         """Respond to keyboard and mouse events"""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.KEYDOWN:
-                self.check_keydown_events(event)
-            elif event.type == pygame.KEYUP:
-                self.check_keyup_events(event)
-
-    def check_keydown_events(self, event):
-        """Respond to key press"""
-        if event.key == pygame.K_RIGHT:
+        # Respond to key press
+        if Events().right_pressed:
             self.ship.moving_right = True
-        elif event.key == pygame.K_LEFT:
+        elif Events().left_pressed:
             self.ship.moving_left = True
-        elif event.key == pygame.K_SPACE:
+        if Events().fire1_pressed:
             self.fire_bullet()
-        elif event.key == pygame.K_ESCAPE:
+        if Events().cancel_pressed:
             self.status.game_running = False
-
-    def check_keyup_events(self, event):
-        """Respond to key release"""
-        if event.key == pygame.K_RIGHT:
+        # Respond to key release
+        if Events().right_released:
             self.ship.moving_right = False
             self.ship.moving_center = True
-        elif event.key == pygame.K_LEFT:
+        elif Events().left_released:
             self.ship.moving_left = False
             self.ship.moving_center = True
 

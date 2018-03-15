@@ -8,6 +8,7 @@ from highscores import HSEntry, HSDisplay
 from config import CFG
 from gfx import GFX
 from sfx import SFX
+from events import Events
 
 
 class Menu():
@@ -66,18 +67,14 @@ class Menu():
         else:
 
             # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        if self.cursor_position != 0:
-                            self.cursor_position -= 1
-                    elif event.key == pygame.K_DOWN:
-                        if self.cursor_position != len(self.menu_items)-1:
-                            self.cursor_position += 1
-                    elif event.key == pygame.K_RETURN:
-                        self.evaluate(game)
+            if Events().up_pressed:
+                if self.cursor_position != 0:
+                    self.cursor_position -= 1
+            elif Events().down_pressed:
+                if self.cursor_position != len(self.menu_items)-1:
+                    self.cursor_position += 1
+            if Events().fire2_pressed:
+                self.evaluate(game)
 
             # Cursor animation and position
             self.cursor.rect.left = self.rect.left + 16

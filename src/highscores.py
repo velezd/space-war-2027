@@ -1,6 +1,7 @@
 import pygame
 from gfx import Text
 from config import CFG
+from events import Events
 
 
 class HSEntry():
@@ -43,34 +44,29 @@ class HSEntry():
 
     def update(self):
         """ Check keyboard events and length of the name """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            if event.type == pygame.KEYDOWN:
-                if not self.done:
-                    if event.key == pygame.K_RIGHT:
-                        if self.cursor < 26:
-                            self.cursor += 1
-                            self.cursor_rect.x += 20
+        if Events().right_pressed:
+            if self.cursor < 26:
+                self.cursor += 1
+                self.cursor_rect.x += 20
 
-                    elif event.key == pygame.K_LEFT:
-                        if self.cursor > 0:
-                            self.cursor -= 1
-                            self.cursor_rect.x -= 20
+        if Events().left_pressed:
+            if self.cursor > 0:
+                self.cursor -= 1
+                self.cursor_rect.x -= 20
 
-                if event.key == pygame.K_SPACE:
-                    if len(self.name) < 3:
-                        self.name = self.name + self.letters[self.cursor]
-                    else:
-                        self.status.high_scores.append([self.name, self.status.score])
-                        self.status.high_scores = sorted(self.status.high_scores, key=lambda x: x[1], reverse=True)
-                        self.status.high_scores.pop(-1)
-                        self.status.score = 0
-                        self.status.new_hs = False
+        if Events().fire2_pressed:
+            if len(self.name) < 3:
+                self.name = self.name + self.letters[self.cursor]
+            else:
+                self.status.high_scores.append([self.name, self.status.score])
+                self.status.high_scores = sorted(self.status.high_scores, key=lambda x: x[1], reverse=True)
+                self.status.high_scores.pop(-1)
+                self.status.score = 0
+                self.status.new_hs = False
 
-                elif event.key == pygame.K_BACKSPACE:
-                    if len(self.name) > 0:
-                        self.name = self.name[:-1]
+        if Events().cancel_pressed:
+            if len(self.name) > 0:
+                self.name = self.name[:-1]
 
         if len(self.name) == 3:
             self.done = True
@@ -117,11 +113,8 @@ class HSDisplay():
 
     def update(self):
         """ Check events """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            if event.type == pygame.KEYDOWN:
-                self.status.show_hs = False
+        if Events().key_pressed:
+            self.status.show_hs = False
 
     def draw(self):
         """ Draw highscores table """

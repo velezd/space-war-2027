@@ -2,6 +2,7 @@
 
 import gfx
 import sfx
+from events import Events
 from config import CFG
 from game import Game
 from menu import Menu
@@ -50,12 +51,15 @@ def run_game():
     menu = Menu(int_screen, status)
     # Init game itself
     game = Game(int_screen, status)
+    # Init events
+    Events()
 
     hud = HUD(status, screen, clock)
 
     # Main loop
     while True:
         dt = clock.tick(60)     # time between frames, should alter speed of everything that is not based on real time
+        Events().get_events()
 
         if status.game_running:
             if game.update(dt): # If update is true level ended -> start new level
