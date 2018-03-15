@@ -1,6 +1,8 @@
 {
-    "scaling": 1,
     "fullscreen": 0,
     "screen_width": "640",
+    "vol_music": 0.8,
+    "vol_effects": 1.0,
+    "scaling": 1,
     "screen_height": "480"
 }

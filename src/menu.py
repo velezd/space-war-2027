@@ -7,6 +7,7 @@ from effects import stars
 from highscores import HSEntry, HSDisplay
 from config import CFG
 from gfx import GFX
+from sfx import SFX
 
 
 class Menu():
@@ -57,6 +58,7 @@ class Menu():
 
     def update(self, game, dt):
         if self.status.show_hs:
+            SFX().music_stop()
             if self.status.new_hs:
                 self.hs_entry.update()
             else:
@@ -92,6 +94,7 @@ class Menu():
     def evaluate(self, game):
         if self.cursor_position == 0:
             # New Game
+            SFX().music_stop()
             self.status.reset()
             game.__init__(self.int_screen, self.status)
             self.status.game_running = True

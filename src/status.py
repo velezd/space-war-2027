@@ -38,7 +38,6 @@ class GameStatus():
             return
 
         if self.lives == 0:
-            mixer.music.stop()
             # Add score to high scores - if high enough
             if self.score > self.high_scores[-1][1]:
                 self.new_hs = True

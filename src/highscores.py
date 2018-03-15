@@ -1,5 +1,5 @@
-from gfx import Text
 import pygame
+from gfx import Text
 from config import CFG
 
 

@@ -25,7 +25,6 @@ class Level():
         self.show_name = False
 
         self.starting = True
-        self.music_started = False
         self.ending = False
         self.story_image = None
         self.story_timer = 0
@@ -38,7 +37,7 @@ class Level():
         self.story_post = level['poststory']
         self.next_level = level['nextlevel']
         self.name = level['name']
-        pygame.mixer.music.load(SFX().music[level['music']])
+        self.music = level['music']
 
     def update(self, dt, enemy_bullets, ship):
         '''
@@ -48,9 +47,8 @@ class Level():
         :param ship:
         :return: True if the game should be running, False if not
         '''
-        if not self.music_started:
-            self.music_started = True
-            pygame.mixer.music.play(-1)
+        if not SFX().is_music_playing():
+            SFX().music_play(self.music)
 
         # Things to do before level starts
         if self.starting:

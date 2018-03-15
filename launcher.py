@@ -30,12 +30,23 @@ class Application():
         self.root.grid()
         self.root.title('Space War 2027')
 
-        self.width_old = 0
-        self.height_old = 0
+        # Init old/default values
+        self.width_old = 640
+        self.height_old = 480
         self.fullscreen_old = 0
-        self.scaling_old = 0
+        self.scaling_old = 1
+        self.vol_effects_old = 1.0
+        self.vol_music_old = 1.0
+
+        # Init tk variables
         self.fullscreen = tk.IntVar()
+        self.fullscreen.set(self.fullscreen_old)
         self.scaling = tk.IntVar()
+        self.scaling.set(self.scaling_old)
+        self.vol_effects = tk.DoubleVar()
+        self.vol_effects.set(self.vol_effects_old)
+        self.vol_music = tk.DoubleVar()
+        self.vol_music.set(self.vol_music_old)
 
         # Load cinfiguration
         self.load()
@@ -49,16 +60,25 @@ class Application():
         self.label_logo = tk.Label(self.root, image=self.logo)
         self.label_logo.grid(columnspan=2)
 
+        # Create labels
         label_resolution = tk.Label(self.root, text='Resolution')
         label_fullscreen = tk.Label(self.root, text='Fullscreen')
         label_scaling = tk.Label(self.root, text='Scaling')
+        label_vol_effects = tk.Label(self.root, text='Effects volume')
+        label_vol_music = tk.Label(self.root, text='Music volume')
 
+        # Create control widgets
         self.check_fullscreen = tk.Checkbutton(self.root, variable=self.fullscreen)
         self.check_scaling = tk.Checkbutton(self.root, variable=self.scaling)
         v = tk.StringVar(self.root)
         self.spin_resolutions = tk.Spinbox(self.root, values=self.resolutions, textvariable=v)
         v.set(self.resolution_old)
+        self.scale_vol_effects = tk.Scale(self.root, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
+                                          showvalue=0, length=170, variable=self.vol_effects)
+        self.scale_vol_music = tk.Scale(self.root, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
+                                        showvalue=0, length=170, variable=self.vol_music)
 
+        # Create buttons
         self.start_button = tk.Button(self.root, text="Start", command=self.start)
         self.quit_button = tk.Button(self.root, text="Quit", command=self.stop)
 
@@ -69,9 +89,12 @@ class Application():
         self.check_fullscreen.grid(row=5, column=1, pady=3)
         label_scaling.grid(row=6, column=0, pady=3)
         self.check_scaling.grid(row=6, column=1, pady=3)
-
-        self.start_button.grid(row=7, columnspan=2, sticky='WE')
-        self.quit_button.grid(row=8, columnspan=2, sticky='WE')
+        label_vol_effects.grid(row=7, column=0, pady=3)
+        self.scale_vol_effects.grid(row=7, column=1, pady=3)
+        label_vol_music.grid(row=8, column=0, pady=3)
+        self.scale_vol_music.grid(row=8, column=1, pady=3)
+        self.start_button.grid(row=9, columnspan=2, sticky='WE')
+        self.quit_button.grid(row=10, columnspan=2, sticky='WE')
 
     def start(self):
         """ Destroy launcher but continue with start of game """
@@ -94,32 +117,51 @@ class Application():
             self.height_old = data['screen_height']
             self.fullscreen_old = data['fullscreen']
             self.scaling_old = data['scaling']
+            self.vol_effects_old = data['vol_effects']
+            self.vol_music_old = data['vol_music']
 
             self.scaling.set(data['scaling'])
             self.fullscreen.set(data['fullscreen'])
+            self.vol_effects.set(data['vol_effects'])
+            self.vol_music.set(data['vol_music'])
 
-        except IOError:
+        except:
+            # if load fails create new settings file with default values
             print 'Can\'t load game settings'
+            self.save()
 
     def save(self):
         """ Save Game config to file, if changed """
+        res = self.spin_resolutions.get().split('x')
         fs = self.fullscreen.get()
         sc = self.scaling.get()
-        res = self.spin_resolutions.get().split('x')
+        ve = self.vol_effects.get()
+        vm = self.vol_music.get()
 
-        if res[0] != self.width_old or res[1] != self.height_old or fs != self.fullscreen_old or sc != self.scaling_old:
-            data = {'screen_width': res[0],
-                    'screen_height': res[1],
-                    'scaling': sc,
-                    'fullscreen': fs}
+        old = [self.width_old, self.height_old, self.fullscreen_old,
+               self.scaling_old, self.vol_effects, self.vol_music]
+        new = [res[0], res[1], fs, sc, ve, vm]
 
-            js_data = dumps(data, indent=4, separators=(',', ': '))
+        # If any value changes save config
+        for i in range(len(old)):
+            if old[i] != new[i]:
+                data = {'screen_width': res[0],
+                        'screen_height': res[1],
+                        'scaling': sc,
+                        'fullscreen': fs,
+                        'vol_effects': ve,
+                        'vol_music': vm}
 
-            try:
-                with open('settings.json', 'w') as file:
-                    file.write(js_data)
-            except IOError:
-                print 'Can\'t save config'
+                js_data = dumps(data, indent=4, separators=(',', ': '))
+
+                try:
+                    with open('settings.json', 'w') as file:
+                        file.write(js_data)
+                except IOError:
+                    print 'Can\'t save config'
+
+                break
+
 
 app = Application()
 app.root.mainloop()

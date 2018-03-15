@@ -20,6 +20,10 @@ class CFG():
         self.path_settings = '../settings.json'
         self.path_save = '../save.json'
 
+        # Sound settings
+        self.sfx_volume = 1.0
+        self.music_volume = 1.0
+
         # Screen settings
         self.screen_width = 1024
         self.screen_height = 768
@@ -58,6 +62,9 @@ class CFG():
         try:
             with open(self.path_settings, 'r') as file:
                 data = loads(file.read())
+
+            self.sfx_volume = float(data['vol_effects'])
+            self.music_volume = float(data['vol_music'])
 
             self.screen_width = int(data['screen_width'])
             self.screen_height = int(data['screen_height'])
