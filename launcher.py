@@ -4,6 +4,7 @@ from json import loads, dumps
 from sys import exit
 from os import chdir
 import subprocess
+import gamepad_config
 
 
 def get_resolutions(ratio):
@@ -27,6 +28,7 @@ class Application():
     """ Game launcher that lets you change configuration before starting the game """
     def __init__(self):
         self.root = tk.Tk()
+        self.root.protocol("WM_DELETE_WINDOW", exit)
         self.root.grid()
         self.root.title('Space War 2027')
 
@@ -58,43 +60,58 @@ class Application():
         # Create widgets
         self.logo = tk.PhotoImage(file='gfx/launcher.gif')
         self.label_logo = tk.Label(self.root, image=self.logo)
-        self.label_logo.grid(columnspan=2)
+        self.frame_graphics = tk.LabelFrame(self.root, text='Graphics')
+        self.frame_graphics.grid_columnconfigure(index=1, weight=1)
+        self.frame_sound = tk.LabelFrame(self.root, text='Sound')
+        self.frame_sound.grid_columnconfigure(index=1, weight=1)
 
-        # Create labels
-        label_resolution = tk.Label(self.root, text='Resolution')
-        label_fullscreen = tk.Label(self.root, text='Fullscreen')
-        label_scaling = tk.Label(self.root, text='Scaling')
-        label_vol_effects = tk.Label(self.root, text='Effects volume')
-        label_vol_music = tk.Label(self.root, text='Music volume')
-
-        # Create control widgets
-        self.check_fullscreen = tk.Checkbutton(self.root, variable=self.fullscreen)
-        self.check_scaling = tk.Checkbutton(self.root, variable=self.scaling)
+        # Create widgets graphics
+        label_resolution = tk.Label(self.frame_graphics, text='Resolution')
+        label_fullscreen = tk.Label(self.frame_graphics, text='Fullscreen')
+        label_scaling = tk.Label(self.frame_graphics, text='Scaling')
+        self.check_fullscreen = tk.Checkbutton(self.frame_graphics, variable=self.fullscreen)
+        self.check_scaling = tk.Checkbutton(self.frame_graphics, variable=self.scaling)
         v = tk.StringVar(self.root)
-        self.spin_resolutions = tk.Spinbox(self.root, values=self.resolutions, textvariable=v)
+        self.spin_resolutions = tk.Spinbox(self.frame_graphics, values=self.resolutions, textvariable=v)
         v.set(self.resolution_old)
-        self.scale_vol_effects = tk.Scale(self.root, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
+
+        # Create widgets sound
+        label_vol_effects = tk.Label(self.frame_sound, text='Effects volume')
+        label_vol_music = tk.Label(self.frame_sound, text='Music volume')
+        self.scale_vol_effects = tk.Scale(self.frame_sound, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
                                           showvalue=0, length=170, variable=self.vol_effects)
-        self.scale_vol_music = tk.Scale(self.root, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
+        self.scale_vol_music = tk.Scale(self.frame_sound, from_=0.0, to=1.0, resolution=0.1, orient=tk.HORIZONTAL,
                                         showvalue=0, length=170, variable=self.vol_music)
 
         # Create buttons
+        self.gamepad_button = tk.Button(self.root, text="Gamepad configuration", command=self.show_gamepad)
         self.start_button = tk.Button(self.root, text="Start", command=self.start)
         self.quit_button = tk.Button(self.root, text="Quit", command=self.stop)
 
-        # Place widget to window
-        label_resolution.grid(row=4,column=0, pady=3)
-        self.spin_resolutions.grid(row=4, column=1, pady=3)
-        label_fullscreen.grid(row=5, column=0, pady=3)
-        self.check_fullscreen.grid(row=5, column=1, pady=3)
-        label_scaling.grid(row=6, column=0, pady=3)
-        self.check_scaling.grid(row=6, column=1, pady=3)
-        label_vol_effects.grid(row=7, column=0, pady=3)
-        self.scale_vol_effects.grid(row=7, column=1, pady=3)
-        label_vol_music.grid(row=8, column=0, pady=3)
-        self.scale_vol_music.grid(row=8, column=1, pady=3)
-        self.start_button.grid(row=9, columnspan=2, sticky='WE')
-        self.quit_button.grid(row=10, columnspan=2, sticky='WE')
+        # Place widgets - Graphics frame
+        label_resolution.grid(row=0,column=0)
+        self.spin_resolutions.grid(row=0, column=1, sticky='E', pady=1)
+        label_fullscreen.grid(row=1, column=0)
+        self.check_fullscreen.grid(row=1, column=1, sticky='E', pady=1)
+        label_scaling.grid(row=2, column=0)
+        self.check_scaling.grid(row=2, column=1, sticky='E', pady=1)
+        # place widgets - Sound frame
+        label_vol_effects.grid(row=0, column=0)
+        self.scale_vol_effects.grid(row=0, column=1, sticky='E', pady=1)
+        label_vol_music.grid(row=1, column=0)
+        self.scale_vol_music.grid(row=1, column=1, sticky='E', pady=1)
+        # Place widgets - main Grid
+        self.label_logo.grid(row=0, columnspan=2)
+        self.frame_graphics.grid(row=1, columnspan=2, padx=5, sticky='WE')
+        self.frame_sound.grid(row=2, columnspan=2, padx=5, pady=5, sticky='WE')
+        self.gamepad_button.grid(row=3, columnspan=2, sticky='WE')
+        self.start_button.grid(row=4, columnspan=2, sticky='WE')
+        self.quit_button.grid(row=5, columnspan=2, sticky='WE')
+
+    def show_gamepad(self):
+        """ Show gamepad configuration window """
+        window = tk.Toplevel(self.root)
+        gamepad_config.GamepadConfig(window)
 
     def start(self):
         """ Destroy launcher but continue with start of game """
@@ -168,4 +185,4 @@ app.root.mainloop()
 
 # Start game
 chdir('src')
-subprocess.call('./sw2027.py')
+subprocess.call('python sw2027.py')

@@ -19,6 +19,7 @@ class CFG():
         self.path_levels = '../levels/'
         self.path_settings = '../settings.json'
         self.path_save = '../save.json'
+        self.path_gamepad = '../gamepad.json'
 
         # Sound settings
         self.sfx_volume = 1.0

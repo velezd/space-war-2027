@@ -29,7 +29,7 @@ class Game():
         # Respond to key press
         if Events().right_pressed:
             self.ship.moving_right = True
-        elif Events().left_pressed:
+        if Events().left_pressed:
             self.ship.moving_left = True
         if Events().fire1_pressed:
             self.fire_bullet()
@@ -39,7 +39,7 @@ class Game():
         if Events().right_released:
             self.ship.moving_right = False
             self.ship.moving_center = True
-        elif Events().left_released:
+        if Events().left_released:
             self.ship.moving_left = False
             self.ship.moving_center = True
 
