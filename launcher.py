@@ -2,7 +2,7 @@
 import Tkinter as tk
 from json import loads, dumps
 from sys import exit
-from os import chdir
+from os import chdir, uname
 import subprocess
 import gamepad_config
 
@@ -185,4 +185,7 @@ app.root.mainloop()
 
 # Start game
 chdir('src')
-subprocess.call('python sw2027.py')
+if uname()[0] == 'Linux':
+    subprocess.call('./sw2027.py')
+else:
+    subprocess.call('python sw2027.py')

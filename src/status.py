@@ -1,6 +1,5 @@
 from json import dumps, loads
 from time import time
-from pygame import mixer
 from config import CFG
 
 

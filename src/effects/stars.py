@@ -107,10 +107,6 @@ class Star(Sprite):
         if not self.on_screen():
             self.kill()
 
-    def draw(self):
-        """ Draw star """
-        self.screen.blit(self.image, self.rect)
-
     def on_screen(self):
         """ Returns True if star is till visible on defined surface """
         is_on = True

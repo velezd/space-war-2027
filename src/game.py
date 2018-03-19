@@ -99,16 +99,11 @@ class Game():
         if self.level.draw():
             # Draw ship
             self.ship.blitme()
-
             # Draw bullets
-            for bullet in self.bullets.sprites():
-                bullet.blitme(self.int_screen)
-            for bullet in self.enemy_bullets.sprites():
-                bullet.blitme(self.int_screen)
-
+            self.bullets.draw(self.int_screen)
+            self.enemy_bullets.draw(self.int_screen)
             # Draw effects
-            for effect in self.effects:
-                effect.blitme(self.int_screen)
+            self.effects.draw(self.int_screen)
 
     def update(self, dt):
         if not self.status.dead:

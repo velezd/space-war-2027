@@ -7,7 +7,7 @@ from config import CFG
 
 class Background():
     """Manage and draw screen background"""
-    def __init__(self, screen, image):
+    def __init__(self, int_screen, image):
         self.background = image
         self.back_rect = self.background.get_rect()
         self.back_rect.centerx = randint(0, CFG().int_screen_width)
@@ -15,9 +15,9 @@ class Background():
         self.back_pos_y = 0.0
         self.back_speed = 0.03
 
-        self.screen = screen
+        self.int_screen = int_screen
         self.stars = Group()
-        stars.generate_init_stars(self.stars, 20, self.screen, 180)
+        stars.generate_init_stars(self.stars, 20, self.int_screen, 180)
         self.gen_speed = 0.1
 
         # set timer
@@ -32,12 +32,11 @@ class Background():
         # Add stars
         if self.timer < time():
             self.timer = time() + self.gen_speed
-            self.stars.add(stars.Star(self.screen, 180))
+            self.stars.add(stars.Star(self.int_screen, 180))
 
     def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.int_screen.fill((0, 0, 0))
 
-        self.screen.blit(self.background, self.back_rect)
+        self.int_screen.blit(self.background, self.back_rect)
 
-        for star in self.stars.sprites():
-            star.draw()
+        self.stars.draw(self.int_screen)

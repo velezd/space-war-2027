@@ -37,8 +37,7 @@ class Menu():
         self.int_screen.fill((0, 0, 0))
 
         # Draw stars
-        for star in self.stars.sprites():
-            star.draw()
+        self.stars.draw(self.int_screen)
 
         # Draw background image
         self.background.draw(self.int_screen)
