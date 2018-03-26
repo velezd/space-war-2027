@@ -73,7 +73,7 @@ class Boss(Sprite):
         """
         anim_end = False
         # if reached animation waypoint
-        if isclose(self.target_x, self.pos_x, 0.10, 0.8) and isclose(self.target_y, self.pos_y, 0.10, 0.8):
+        if isclose(self.target_x, self.pos_x, 0.01, 1.0) and isclose(self.target_y, self.pos_y, 0.01, 1.0):
             self.animation_frame += 1
 
             if len(animation) == self.animation_frame:
@@ -131,7 +131,7 @@ class Boss1(Boss):
                            [10, 20, self.img_down[2], self.mask_down[2]],
                            [20, 10, self.img_down[3], self.mask_down[3]],
                            [20, 5, self.img_right[0], self.mask_right[0]],
-                           [349, 0, self.img_right[1], self.mask_right[1]],
+                           [338, 0, self.img_right[1], self.mask_right[1]],
                            [20, -5, self.img_right[0], self.mask_right[0]],
                            [20, -10, self.img_up[0], self.mask_up[0]],
                            [10, -20, self.img_up[1], self.mask_up[1]],
@@ -144,7 +144,7 @@ class Boss1(Boss):
                            [10, 20, self.img_down[2], self.mask_down[2]],
                            [20, 10, self.img_down[3], self.mask_down[3]],
                            [20, 5, self.img_right[0], self.mask_right[0]],
-                           [154, 0, self.img_right[1], self.mask_right[1]],
+                           [146, 0, self.img_right[1], self.mask_right[1]],
                            [20, -5, self.img_right[0], self.mask_right[0]],
                            [20, -10, self.img_up[0], self.mask_up[0]],
                            [10, -20, self.img_up[1], self.mask_up[1]],

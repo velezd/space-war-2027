@@ -30,8 +30,8 @@ class CFG():
         self.screen_height = 768
         self.fullscreen = False
         self.scaling = True
-        self.int_screen_width = 600
-        self.int_screen_height = 300
+        self.int_screen_width = 640
+        self.int_screen_height = 320
         self.int_scale_width = 0
         self.int_scale_height = 0
         self.bg_color = (0,0,0)

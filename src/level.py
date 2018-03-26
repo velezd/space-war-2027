@@ -138,15 +138,17 @@ class Level():
     def draw(self):
         # If showing story image, return False, nothing will render over it
         if self.story_image:
-            self.int_screen.blit(self.story_image, self.story_image.get_rect())
+            self.draw_story()
             return False
-
         self.background.draw()
         self.enemies.draw(self.int_screen)
         if self.show_name:
             rect = self.int_screen.get_rect()
             self.text.write(self.name, rect.width/2, rect.height/2, color=None, origin='center')
         return True
+
+    def draw_story(self):
+        self.int_screen.blit(self.story_image, self.story_image.get_rect())
 
     def show_story(self, story):
         if len(story):

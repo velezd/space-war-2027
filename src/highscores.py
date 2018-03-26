@@ -20,11 +20,11 @@ class HSEntry():
         self.cursor = 0
         self.done = False
         self.highlight_color = (100,100,100)
-        self.name_position = [300,150]
+        self.name_position = [320,150]
         self.title = 'New high score!'
-        self.title_position = [300,50]
+        self.title_position = [320,50]
 
-        self.x = 30
+        self.x = 50
         self.y = 220
 
         self.font1 = Text(self.int_screen, CFG().font_main, 16, (255, 255, 255))
@@ -108,8 +108,8 @@ class HSDisplay():
         self.font = Text(self.int_screen, CFG().font_main, 16, (255, 255, 255))
         self.y = 40
         self.spacing = 25
-        self.x_name = 210
-        self.x_score = 300
+        self.x_name = 230
+        self.x_score = 320
 
     def update(self):
         """ Check events """
