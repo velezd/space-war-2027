@@ -60,6 +60,10 @@ class GFX():
         self.fx_hits = [self.load_animation(image.load(path.join(CFG().path_gfx, 'effects/hit1.png')).convert_alpha()),
                         self.load_animation(image.load(path.join(CFG().path_gfx, 'effects/hit2.png')).convert_alpha()),
                         self.load_animation(image.load(path.join(CFG().path_gfx, 'effects/hit3.png')).convert_alpha())]
+        self.fx_explosion = [self.load_animation(image.load(path.join(CFG().path_gfx,
+                                                                      'effects/explosion2.png')).convert_alpha()),
+                             self.load_animation(image.load(path.join(CFG().path_gfx,
+                                                                      'effects/explosion3.png')).convert_alpha())]
 
         # Story images
         self.story = self.load_story()

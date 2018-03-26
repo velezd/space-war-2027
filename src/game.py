@@ -77,6 +77,7 @@ class Game():
 
             enemy.hit()
             if enemy.health <= 0:
+                self.effects.add(hit.Explosion([enemy.rect.centerx, enemy.rect.centery]))
                 self.status.score += enemy.reward
                 self.level.enemies.remove(enemy)
                 SFX().boom1.play()
@@ -88,8 +89,10 @@ class Game():
             SFX().boom1.play()
 
         # Check collisions between player and enemies
-        list = pygame.sprite.spritecollide(self.ship, self.level.enemies, True, pygame.sprite.collide_mask)
-        if list:
+        list = pygame.sprite.spritecollide(self.ship, self.level.enemies, False, pygame.sprite.collide_mask)
+        for enemy in list:
+            self.effects.add(hit.Explosion([enemy.rect.centerx, enemy.rect.centery]))
+            self.level.enemies.remove(enemy)
             self.status.lives -= 1
             SFX().boom1.play()
 
