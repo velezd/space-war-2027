@@ -40,7 +40,7 @@ class Level():
         self.name = level['name']
         self.music = level['music']
 
-    def update(self, dt, enemy_bullets, ship):
+    def update(self, dt, enemy_bullets, ship, status):
         '''
         Updated level, background and enemies
         :param dt:
@@ -123,7 +123,7 @@ class Level():
                         self.enemies.add(shifter.Shifter(pos_x))
 
                     elif char == '1':
-                        self.enemies.add(boss.Boss1())
+                        self.enemies.add(boss.Boss1(status))
 
         # Enemy update
         self.enemies.update(dt, enemy_bullets, ship)

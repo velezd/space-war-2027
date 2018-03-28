@@ -12,6 +12,7 @@ class GameStatus():
         self.show_hs = False
         self.dead_timer = 0
         self.lives = CFG().start_lives
+        self.boss_lives = 0
         self.score = 0
         self.level = CFG().start_level
         self.high_scores = [['1', 10000],
@@ -27,6 +28,7 @@ class GameStatus():
     def reset(self):
         self.dead = False
         self.lives = CFG().start_lives
+        self.boss_lives = 0
         self.score = 0
         self.level = CFG().start_level
 

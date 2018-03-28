@@ -11,6 +11,7 @@ class CFG():
         """Init the game's settings"""
         # Paths
         self.path_gfx = '../gfx/'
+        self.path_effects = '../gfx/effects/'
         self.path_fonts = '../gfx/fonts/'
         self.path_bg = '../gfx/backgrounds'
         self.path_bg_menu = '../gfx/backgrounds/menu'
@@ -35,6 +36,7 @@ class CFG():
         self.int_scale_width = 0
         self.int_scale_height = 0
         self.bg_color = (0,0,0)
+        self.show_fps = True
 
         # Player ship settings
         self.ship_speed = 0.5
@@ -48,6 +50,7 @@ class CFG():
 
         # Game settings
         self.start_level = 'level1.json'
+        self.max_lives = 5
         self.start_lives = 3
         self.spawn_speed = 0.5
         self.level_width = 15

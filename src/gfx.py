@@ -65,6 +65,9 @@ class GFX():
                              self.load_animation(image.load(path.join(CFG().path_gfx,
                                                                       'effects/explosion3.png')).convert_alpha())]
 
+        tmp = image.load(path.join(CFG().path_effects, 'player_shield.png')).convert_alpha()
+        self.fx_player_shield = self.load_animation(tmp)
+
         # Story images
         self.story = self.load_story()
 
@@ -77,6 +80,12 @@ class GFX():
                                 'back': image.load(path.join(CFG().path_bg_menu, 'ship_big_back.png')).convert_alpha()}
 
         # Misc
+        tmp = image.load(path.join(CFG().path_gfx, 'progressbar.png')).convert()
+        self.progressbar = [tmp.subsurface(0, 0, 16, 4), tmp.subsurface(16, 0, 16, 4)]
+
+        tmp = image.load(path.join(CFG().path_gfx, 'hud_lives.png')).convert_alpha()
+        self.hud_lives = self.load_animation(tmp)
+
         self.logo = image.load(path.join(CFG().path_gfx, 'logo.png')).convert_alpha()
 
         # -- Creating masks --

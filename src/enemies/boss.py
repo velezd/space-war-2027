@@ -1,7 +1,7 @@
 from pygame.sprite import Sprite
 from time import time
 from bullet import EnemyBullet
-from math import cos, sin, radians
+from math import cos, sin, radians, ceil
 from utilities import rt_angle, isclose
 import pygame
 from gfx import GFX
@@ -10,9 +10,10 @@ from sfx import SFX
 
 class Boss(Sprite):
     """ Boss sprite parent class """
-    def __init__(self):
+    def __init__(self, status):
         """ Init enemy boss """
         super(Boss, self).__init__()
+        self.status = status
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.image = pygame.Surface((0, 0))
         self.mask = pygame.Mask((0, 0))
@@ -98,13 +99,15 @@ class Boss(Sprite):
 
 
 class Boss1(Boss):
-    def __init__(self):
+    def __init__(self, status):
         """ Init enemy boss """
-        super(Boss1, self).__init__()
+        super(Boss1, self).__init__(status)
         # Properties
         self.stage = 1
         self.next_stage = None
-        self.health = 4000
+        self.max_health = 4000
+        self.health = self.max_health
+        self.status.boss_lives = 10
         self.reward = 2000
         self.animation_speed = 0.06
         # Shooting
@@ -201,3 +204,4 @@ class Boss1(Boss):
 
     def hit(self):
         self.health -= 20
+        self.status.boss_lives = int(ceil(self.health/float(self.max_health/10)))

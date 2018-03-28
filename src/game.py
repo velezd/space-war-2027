@@ -85,6 +85,8 @@ class Game():
         # check collisions between player and enemy bullets
         dict = pygame.sprite.spritecollide(self.ship, self.enemy_bullets, True, pygame.sprite.collide_mask)
         for bullet in dict:
+            self.effects.add(hit.Hit([bullet.rect.centerx, bullet.rect.bottom]))
+            self.ship.hit()
             self.status.lives -= 1
             SFX().boom1.play()
 
@@ -92,6 +94,7 @@ class Game():
         list = pygame.sprite.spritecollide(self.ship, self.level.enemies, False, pygame.sprite.collide_mask)
         for enemy in list:
             self.effects.add(hit.Explosion([enemy.rect.centerx, enemy.rect.centery]))
+            self.ship.hit()
             self.level.enemies.remove(enemy)
             self.status.lives -= 1
             SFX().boom1.play()
@@ -110,7 +113,7 @@ class Game():
 
     def update(self, dt):
         if not self.status.dead:
-            if self.level.update(dt, self.enemy_bullets, self.ship):
+            if self.level.update(dt, self.enemy_bullets, self.ship, self.status):
                 self.check_events()
                 self.ship.update(dt)
                 self.bullets.update(dt)

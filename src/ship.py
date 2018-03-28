@@ -1,6 +1,8 @@
 from time import time
 from config import CFG
 from gfx import GFX
+from effects import shield
+from pygame.sprite import Group
 
 
 class Ship():
@@ -28,9 +30,12 @@ class Ship():
         self.moving_center = False # Used for resetting ship image
         self.shooting = False
 
+        self.effects = Group()
+
     def blitme(self):
         """Draw the ship"""
         self.screen.blit(self.image, self.rect)
+        self.effects.draw(self.screen)
 
     def update(self, dt):
         """Updates ship movement and graphics"""
@@ -64,3 +69,8 @@ class Ship():
 
         # Apply ship movement
         self.rect.centerx = self.pos_x
+
+        self.effects.update(dt)
+
+    def hit(self):
+        self.effects.add(shield.PlayerShield(self))
