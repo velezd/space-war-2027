@@ -27,70 +27,54 @@ class Level():
 
         self.starting = True
         self.ending = False
-        self.story_image = None
-        self.story_timer = 0
 
         self.text = Text(int_screen, CFG().font_main, 16, (255, 255, 255))
 
         self.layout = level['layout']
         self.background = Background(self.int_screen, GFX().background[level['background']])
-        self.story_pre = level['prestory']
-        self.story_post = level['poststory']
+        self.story = Story(level['prestory'], level['poststory'], self.int_screen)
         self.next_level = level['nextlevel']
         self.name = level['name']
         self.music = level['music']
 
     def update(self, dt, enemy_bullets, ship, status):
-        '''
+        """
         Updated level, background and enemies
         :param dt:
         :param enemy_bullets:
         :param ship:
         :return: True if the game should be running, False if not
-        '''
+        """
         if not SFX().is_music_playing():
             SFX().music_play(self.music)
 
-        # Things to do before level starts
+        # If at the start of level show story
         if self.starting:
-            # Showing story - do nothing
-            if self.story_timer > time():
-                # Any keypress will skip story image
-                if Events().key_pressed:
-                    self.story_timer = 0
+            if self.story.update('start'):
                 return False
-            else:
-                self.story_image = None
-
-            # Show next story image
-            if len(self.story_pre) != 0:
-                self.show_story(self.story_pre)
-                return False
-            # No more story images - start level
+            # No more story - start level
             self.show_name = True
-            self.story_timer = time() + 3
+            self.timer = time() + 3
             self.starting = False
             self.enemy_hold = True
 
         # Show level name, hold enemies
         elif self.show_name:
-            if self.story_timer > time():
+            if self.timer > time():
                 self.enemy_hold = True
             else:
                 self.show_name = False
 
         # No more level + no more enemies
         if len(self.layout) == 0 and len(self.enemies) == 0:
-            if self.story_timer > time():
+            # Show end story
+            if self.story.update('end'):
                 return False
-            else:
-                # Show story
-                self.show_story(self.story_post)
-                # No more story - end game
-                if len(self.story_post) == 0 and self.story_timer < time():
-                    self.ending = True
-                    pygame.mixer.music.stop()
-                    return True
+
+            # End level
+            self.ending = True
+            pygame.mixer.music.stop()
+            return True
 
         # Background update
         self.background.update(dt)
@@ -137,21 +121,86 @@ class Level():
 
     def draw(self):
         # If showing story image, return False, nothing will render over it
-        if self.story_image:
-            self.draw_story()
+        if self.story.story_image is not None:
+            self.story.draw()
             return False
+
         self.background.draw()
         self.enemies.draw(self.int_screen)
+
         if self.show_name:
             rect = self.int_screen.get_rect()
-            self.text.write(self.name, rect.width/2, rect.height/2, color=None, origin='center')
+            self.text.write(self.name, rect.width/2, rect.height/2, origin='center')
+
         return True
 
-    def draw_story(self):
-        self.int_screen.blit(self.story_image, self.story_image.get_rect())
 
-    def show_story(self, story):
-        if len(story):
-            page = story.pop(0)
-            self.story_image = GFX().story[page['image']]
-            self.story_timer = time() + page['time']
+class Story():
+    """ Shows story before and after level """
+    def __init__(self, start_story, end_story, screen):
+        """
+        Init Story
+
+        :param start_story: list of dict containing image name, time in seconds, and text
+        :param end_story: list of dict containing image name, time in seconds, and text
+        :param screen: surface to show the story on
+        """
+        self.start_story = start_story
+        self.end_story = end_story
+        self.screen = screen
+        self.font = Text(self.screen, CFG().font_main, 11, (255, 255, 255), True)
+
+        self.story_image = None
+        self.story_timer = 0
+        self.story_text = ''
+
+        rect = self.screen.get_rect()
+        self.text_x = rect.width / 2
+        self.text_y = rect.height - (rect.height / 16)
+
+    def update(self, set='start'):
+        """
+        Goes trough the story list, keeps duration for showing the story and updates current image and text
+
+        :param set: string start or end - which part of story to show
+        :return: True if showing image, False if all images have been shown
+        """
+        # If it's time for next story
+        if self.story_timer < time():
+            self.story_image = None
+            self.story_text = ''
+
+            if set == 'start':
+                story = self.start_story
+            else:
+                story = self.end_story
+
+            if len(story):
+                page = story.pop(0)
+                # Set next story image, duration and text
+                self.story_image = GFX().story[page['image']]
+                self.story_timer = time() + page['time']
+                if 'text' in page.keys():
+                    self.story_text = page['text']
+            else:
+                return False
+        else:
+            # Allow skipping of story at the start of level
+            if set == 'start':
+                if Events().key_pressed:
+                    self.story_timer = 0
+
+        return True
+
+    def draw(self):
+        """ Draw current story image and text"""
+        self.screen.blit(self.story_image, self.story_image.get_rect())
+
+        if self.story_text != '':
+            text = self.story_text.split('\n')
+            # Set initial padding from bottom based on number of lines
+            y = self.text_y - (16 * len(text))
+
+            for line in text:
+                self.font.write(line, self.text_x, y, origin='center')
+                y += 16
