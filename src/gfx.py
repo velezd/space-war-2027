@@ -75,6 +75,9 @@ class GFX():
         self.background = {}
         tmp = image.load(path.join(CFG().path_bg, 'background1.png')).convert()
         self.background['galaxy'] = transform.scale(tmp, (CFG().int_screen_width, CFG().int_screen_width))
+        tmp = image.load(path.join(CFG().path_bg, 'test_background.png')).convert()
+        scale = tmp.get_rect().width / float(CFG().int_screen_width)
+        self.background['test'] = transform.scale(tmp, (CFG().int_screen_width, int(tmp.get_rect().height * scale)))
 
         self.menu_background = {'front': image.load(path.join(CFG().path_bg_menu, 'ship_med_front.png')).convert_alpha(),
                                 'back': image.load(path.join(CFG().path_bg_menu, 'ship_big_back.png')).convert_alpha()}

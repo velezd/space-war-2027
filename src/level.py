@@ -31,7 +31,10 @@ class Level():
         self.text = Text(int_screen, CFG().font_main, 16, (255, 255, 255))
 
         self.layout = level['layout']
-        self.background = Background(self.int_screen, GFX().background[level['background']])
+        self.background = Background(self.int_screen, GFX().background[level['background']],
+                                     type=level['background_type'],
+                                     use_stars=level['stars'],
+                                     lenght=len(self.layout))
         self.story = Story(level['prestory'], level['poststory'], self.int_screen)
         self.next_level = level['nextlevel']
         self.name = level['name']
@@ -77,7 +80,7 @@ class Level():
             return True
 
         # Background update
-        self.background.update(dt)
+        self.background.update(dt, self.enemy_hold)
 
         # Enemy spawning and level progression
         if self.enemy_hold:
