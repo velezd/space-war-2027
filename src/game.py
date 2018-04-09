@@ -23,6 +23,7 @@ class Game():
         self.bullets = Group()
         self.enemy_bullets = Group()
         self.effects = Group()
+        self.pickups = Group()
 
     def check_events(self):
         """Respond to keyboard and mouse events"""
@@ -77,6 +78,8 @@ class Game():
 
             enemy.hit()
             if enemy.health <= 0:
+                if enemy.pickup:
+                    self.pickups.add(enemy.pickup([enemy.rect.centerx, enemy.rect.centery]))
                 self.effects.add(hit.Explosion([enemy.rect.centerx, enemy.rect.centery]))
                 self.status.score += enemy.reward
                 self.level.enemies.remove(enemy)
@@ -99,12 +102,19 @@ class Game():
             self.status.lives -= 1
             SFX().boom1.play()
 
+        # Check collisions between player and pickups
+        list = pygame.sprite.spritecollide(self.ship, self.pickups, False)
+        for pickup in list:
+            pickup.pickup(self.status)
+
     def draw(self):
         """ Draw game objects to internal screen """
         # Draw level
         if self.level.draw():
             # Draw ship
             self.ship.blitme()
+            # Draw pickups
+            self.pickups.draw(self.int_screen)
             # Draw bullets
             self.bullets.draw(self.int_screen)
             self.enemy_bullets.draw(self.int_screen)
@@ -118,6 +128,7 @@ class Game():
                 self.ship.update(dt)
                 self.bullets.update(dt)
                 self.enemy_bullets.update(dt)
+                self.pickups.update(dt)
                 self.check_collisions()
                 self.effects.update(dt)
                 if self.level.ending:

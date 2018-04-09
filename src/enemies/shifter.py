@@ -4,6 +4,7 @@ from bullet import EnemyBullet
 from gfx import GFX
 from sfx import SFX
 from config import CFG
+from pickups import PickupShield
 
 
 class Shifter(Sprite):
@@ -32,6 +33,13 @@ class Shifter(Sprite):
         self.shoot_chance = 80
         self.shoot_at = randint(1, self.shoot_chance)
         self.size = self.rect.height
+
+        # Pickup temporary
+        num = randint(1, 6)
+        if num == 1:
+            self.pickup = PickupShield
+        else:
+            self.pickup = None
 
     def update(self, dt, enemy_bullets, ship):
         """Update movement, animation and shooting"""

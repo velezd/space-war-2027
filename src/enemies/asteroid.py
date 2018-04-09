@@ -14,6 +14,7 @@ class Asteroid(Sprite):
         # Stats
         self.health = 100
         self.reward = 100
+        self.pickup = None
 
         # Select random asteroid image
         self.i = randint(0, len(GFX().asteroids)-1)

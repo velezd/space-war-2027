@@ -82,6 +82,10 @@ class GFX():
         self.menu_background = {'front': image.load(path.join(CFG().path_bg_menu, 'ship_med_front.png')).convert_alpha(),
                                 'back': image.load(path.join(CFG().path_bg_menu, 'ship_big_back.png')).convert_alpha()}
 
+        # Pickups
+        self.pickups = {'shield': self.load_animation(image.load(path.join(CFG().path_gfx,
+                                                                           'pickup_shield.png')).convert_alpha())}
+
         # Misc
         tmp = image.load(path.join(CFG().path_gfx, 'progressbar.png')).convert()
         self.progressbar = [tmp.subsurface(0, 0, 16, 4), tmp.subsurface(16, 0, 16, 4)]
